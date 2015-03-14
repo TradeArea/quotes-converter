@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Конвертер котировок</title>
+
+    <link href="css/main.css" type="text/css" rel="stylesheet" />
+
+    <script type="text/html" id="choose-area-tpl">
+        <div class="choose-area">
+            <div class="info">Перетащите файлы для конвертации или кликните мышью для выбора файлов.</div>
+        </div>
+    </script>
+
+</head>
+<body>
+<div id="application"></div>
+
+<script src="libs/jquery-2.1.3.js"></script>
+
+
+<script src="app/ns.js"></script>
+<script src="app/config.js"></script>
+
+<script src="app/mixins/ChooseFilesMixin.js"></script>
+<script src="app/handlers/ChooseFilesHandler.js"></script>
+<script src="app/layout/ChooseAreaCreator.js"></script>
+
+
+<script src="app/app.js"></script>
+
+<script>
+    QC.init();
+</script>
+
+
+</body>
+</html>

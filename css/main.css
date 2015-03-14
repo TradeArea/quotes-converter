@@ -1,0 +1,17 @@
+
+
+.choose-area {
+    width: 460px;
+    height: 200px;
+    border: 3px;
+    border-style: dashed;
+    font-size: 25px;
+    padding: 12px;
+    margin: 0 auto;
+    text-align: center;
+    cursor: pointer;
+}
+
+.choose-area .info {
+    margin-top: 65px;
+}
