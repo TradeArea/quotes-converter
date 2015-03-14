@@ -6,3 +6,4 @@ QC = {};
 QC.mixins = {};
 QC.layout = {};
 QC.handlers = {};
+QC.modules = {};
