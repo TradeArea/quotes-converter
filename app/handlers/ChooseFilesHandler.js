@@ -3,7 +3,7 @@
  */
 
 QC.handlers.ChooseFilesHandler = (function () {
-    return function () {
+    return function (files) {
         debugger;
     };
 })();
