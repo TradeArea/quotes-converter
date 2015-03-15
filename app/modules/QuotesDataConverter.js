@@ -103,14 +103,11 @@ QC.modules.QuotesDataConverter = (function () {
             ln = this.source.length,
             resultArrayIndex = 0,
             resultArray = [],
-            timeItem,
+            timeItem, timeItemPrev,
             current;
 
         //           2    3    4   5
         // Date,Time,OPEN,HIGH,LOW,CLOSE,Volume
-
-        // TODO На белых пятнах массив-приемник заполняется лишними элементами
-
         console.info('Start convert');
 
         for (var i = 0;i<ln;i++) {
@@ -119,6 +116,7 @@ QC.modules.QuotesDataConverter = (function () {
                 console.log("> Пропускаем " + this.source[i][0] + " " + this.source[i][1]);
                 continue;
             }
+            timeItemPrev = i > 0 ? moment(this.source[i-1][0] + " " + this.source[i-1][1], timeFormatter).unix() : -1;
 
             // Если время обрабатываемого тика в пределах вычисляемого периода
             if (calculatePeriodStart < timeItem && timeItem < calculatePeriodEnd) {
@@ -134,8 +132,8 @@ QC.modules.QuotesDataConverter = (function () {
                 }
                 // Если элемент уже существует
                 else {
-                    if (resultArray[resultArrayIndex][3] < current[3]) { resultArray[resultArrayIndex][3] = current[3]; }
-                    if (resultArray[resultArrayIndex][4] > current[4]) { resultArray[resultArrayIndex][4] = current[4]; }
+                    if (parseFloat(resultArray[resultArrayIndex][3]) < parseFloat(current[3])) { resultArray[resultArrayIndex][3] = current[3]; }
+                    if (parseFloat(resultArray[resultArrayIndex][4]) > parseFloat(current[4])) { resultArray[resultArrayIndex][4] = current[4]; }
                     resultArray[resultArrayIndex][5] = current[5];
                     console.log("Элемент существует. Корректируем параметры.");
                 }
@@ -144,23 +142,36 @@ QC.modules.QuotesDataConverter = (function () {
             // Если очередной обрабатываемый тик вышел за пределы целевого диапазона
             if (timeItem >= calculatePeriodEnd) {
                 // Переходим в следующий целевой диапазон
+                // --
+                current = null;
 
                 /**
-                 * TODO: Здесь нужно не просто переходить к следующему диапазону, а проверять timeItem на отставание
-                 * TODO: от i-1 элемента на время меньшее чем targetResolution. Это нужно чтобы обработать
-                 * TODO: белые пятна в исходных данных и исключить появление фантомных элементов в массиве-приемнике
+                 * Здесь нужно не просто переходить к следующему диапазону, а проверять timeItem на отставание
+                 * от i-1 элемента на время меньшее чем targetResolution. Это нужно чтобы обработать
+                 * белые пятна в исходных данных и исключить появление фантомных элементов в массиве-приемнике
                  */
 
-                console.log("Вышли за пределы диапазона. Меняем диапазон.");
+                // Если timeItem отстает от предыдущего элемента на время не большее чем целевое разрешение (условие исключения белых пятен)
+                if (timeItem - timeItemPrev <= resolutionSeconds) {
+                    console.log("Вышли за пределы диапазона. Меняем диапазон.");
 
-                // обозначаем границы нового периода
-                calculatePeriodStart = calculatePeriodEnd;
-                calculatePeriodEnd = calculatePeriodStart + resolutionSeconds;
+                    // обозначаем границы нового периода
+                    calculatePeriodStart = calculatePeriodEnd;
+                    calculatePeriodEnd = calculatePeriodStart + resolutionSeconds;
 
+                    // порядковый номер элемента в массиве-приемнике
+                    resultArrayIndex++;
+                } else {
+                    console.info('>> История отсутствует! Перескакиваем через белое пятно. <<');
 
-                current = null;
-                // порядковый номер элемента в массиве-приемнике
-                resultArrayIndex++;
+                    // обозначаем границы нового периода
+                    calculatePeriodStart = QC.modules.TimeMapper.getStartPoint(this.source[i][0], this.source[i][1], this.targetResolution);
+                    calculatePeriodEnd = calculatePeriodStart + resolutionSeconds;
+
+                    // порядковый номер элемента в массиве-приемнике
+                    resultArrayIndex++;
+                }
+
             }
 
         }
