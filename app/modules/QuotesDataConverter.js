@@ -110,7 +110,7 @@ QC.modules.QuotesDataConverter = (function () {
         // Date,Time,OPEN,HIGH,LOW,CLOSE,Volume
 
         for (var i = 0;i<ln;i++) {
-            timeItem = moment(this.source[i][0] + " " + this.source[i][1]).unix();
+            timeItem = moment(this.source[i][0] + " " + this.source[i][1], timeFormatter).unix();
             if (timeItem < this.startMoment) continue;
 
             // Если время обрабатываемого тика в пределах вычисляемого периода
@@ -153,6 +153,10 @@ QC.modules.QuotesDataConverter = (function () {
         return this;
     };
 
+    function done (callback) {
+        callback(this.resultArray);
+        return this;
+    }
 
     return function () {
         return new Converter();
