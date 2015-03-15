@@ -52,6 +52,11 @@ QC.modules.QuotesDataConverter = (function () {
          */
         this.startMoment = -1;
 
+        /**
+         * Массив с результатами конвертации
+         * @type {Array}
+         */
+        this.resultArray = [];
 
         this.clear();
     }
@@ -93,19 +98,57 @@ QC.modules.QuotesDataConverter = (function () {
         this.prepare();
         var resolutionSeconds = this.targetResolution * 60,
             timeFormatter = dateFormat + " " + timeFormat,
-            startPeriod = this.startMoment,
+            calculatePeriodStart = this.startMoment,
+            calculatePeriodEnd = calculatePeriodStart + resolutionSeconds,
             ln = this.source.length,
+            resultArrayIndex = 0,
             resultArray = [],
-            timeItem;
+            timeItem,
+            current;
 
+        //           2    3    4   5
+        // Date,Time,OPEN,HIGH,LOW,CLOSE,Volume
 
         for (var i = 0;i<ln;i++) {
             timeItem = moment(this.source[i][0] + " " + this.source[i][1]).unix();
+            if (timeItem < this.startMoment) continue;
 
-            //if () {}
+            // Если время обрабатываемого тика в пределах вычисляемого периода
+            if (calculatePeriodStart < timeItem && timeItem < calculatePeriodEnd) {
+                // Очередной элемент для обработки
+                current = this.source[i];
+
+                // Если элемент текущего периода еще небыл создан в массиве-приемнике
+                if (!resultArray[resultArrayIndex]) {
+                    current[0] = moment(calculatePeriodStart).format(dateFormat);
+                    current[1] = moment(calculatePeriodStart).format(timeFormat);
+                    resultArray.push(current);
+                }
+                // Если элемент уже существует
+                else {
+                    if (resultArray[resultArrayIndex][3] < current[3]) { resultArray[resultArrayIndex][3] = current[3]; }
+                    if (resultArray[resultArrayIndex][4] > current[4]) { resultArray[resultArrayIndex][4] = current[4]; }
+                    resultArray[resultArrayIndex][5] = current[5];
+                }
+
+            } else
+            // Если очередной обрабатываемый тик вышел за пределы целевого диапазона
+            if (timeItem >= calculatePeriodEnd) {
+                // Переходим в следующий целевой диапазон
+
+                // обозначаем границы нового периода
+                calculatePeriodStart = calculatePeriodEnd;
+                calculatePeriodEnd = calculatePeriodStart + resolutionSeconds;
+
+
+                current = null;
+                // порядковый номер элемента в массиве-приемнике
+                resultArrayIndex++;
+            }
 
         }
 
+        this.resultArray = resultArray;
 
         return this;
     };
