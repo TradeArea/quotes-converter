@@ -109,9 +109,16 @@ QC.modules.QuotesDataConverter = (function () {
         //           2    3    4   5
         // Date,Time,OPEN,HIGH,LOW,CLOSE,Volume
 
+        // TODO На белых пятнах массив-приемник заполняется лишними элементами
+
+        console.info('Start convert');
+
         for (var i = 0;i<ln;i++) {
             timeItem = moment(this.source[i][0] + " " + this.source[i][1], timeFormatter).unix();
-            if (timeItem < this.startMoment) continue;
+            if (timeItem < this.startMoment) {
+                console.log("> Пропускаем " + this.source[i][0] + " " + this.source[i][1]);
+                continue;
+            }
 
             // Если время обрабатываемого тика в пределах вычисляемого периода
             if (calculatePeriodStart < timeItem && timeItem < calculatePeriodEnd) {
@@ -120,21 +127,31 @@ QC.modules.QuotesDataConverter = (function () {
 
                 // Если элемент текущего периода еще небыл создан в массиве-приемнике
                 if (!resultArray[resultArrayIndex]) {
-                    current[0] = moment(calculatePeriodStart).format(dateFormat);
-                    current[1] = moment(calculatePeriodStart).format(timeFormat);
+                    current[0] = moment.unix(calculatePeriodStart).format(dateFormat);
+                    current[1] = moment.unix(calculatePeriodStart).format(timeFormat);
                     resultArray.push(current);
+                    console.log("Элемент отсутствует. Создаем: " + current[0] + " " + current[1] + ". Ln: " + resultArray.length);
                 }
                 // Если элемент уже существует
                 else {
                     if (resultArray[resultArrayIndex][3] < current[3]) { resultArray[resultArrayIndex][3] = current[3]; }
                     if (resultArray[resultArrayIndex][4] > current[4]) { resultArray[resultArrayIndex][4] = current[4]; }
                     resultArray[resultArrayIndex][5] = current[5];
+                    console.log("Элемент существует. Корректируем параметры.");
                 }
 
             } else
             // Если очередной обрабатываемый тик вышел за пределы целевого диапазона
             if (timeItem >= calculatePeriodEnd) {
                 // Переходим в следующий целевой диапазон
+
+                /**
+                 * TODO: Здесь нужно не просто переходить к следующему диапазону, а проверять timeItem на отставание
+                 * TODO: от i-1 элемента на время меньшее чем targetResolution. Это нужно чтобы обработать
+                 * TODO: белые пятна в исходных данных и исключить появление фантомных элементов в массиве-приемнике
+                 */
+
+                console.log("Вышли за пределы диапазона. Меняем диапазон.");
 
                 // обозначаем границы нового периода
                 calculatePeriodStart = calculatePeriodEnd;
@@ -153,10 +170,10 @@ QC.modules.QuotesDataConverter = (function () {
         return this;
     };
 
-    function done (callback) {
+    Converter.prototype.done = function (callback) {
         callback(this.resultArray);
         return this;
-    }
+    };
 
     return function () {
         return new Converter();

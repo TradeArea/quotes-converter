@@ -31,6 +31,7 @@ QC.modules.TimeMapper = (function () {
             timeFormatter = dateFormat + " " + timeFormat,
             realStartPeriodM = moment(realStartPeriod, timeFormatter);
 
+        // TODO: Вычисляемое время отличается от ожидаемого на 3 часа. При вычислении нужно учитывать часовые пояса, UTC-время и прочее
 
         /**
          * Если целевое разрешение находится в пределах чата включительно,

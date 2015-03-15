@@ -13,13 +13,14 @@ QC.handlers.ChooseFilesHandler = (function () {
         }
 
         debugger;
-        QC.modules.QuotesDataConverter
+        QC.modules.QuotesDataConverter()
             .data({
                 sourceData: FileArray,
                 targetResolution: 60
             })
             .convert()
             .done(function (resultArray) {
+                console.log(resultArray);
                 debugger;
             });
     }
