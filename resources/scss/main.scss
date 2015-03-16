@@ -3,8 +3,13 @@
  */
 
 @import "mixins";
- 
+@import "mainGrid";
+
+@import "../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+@import "../../node_modules/font-awesome/scss/font-awesome";
+
+
 .application {
   @include absolute(0, 0, 0, 0);
-  background-color: #ccc;
+
 }

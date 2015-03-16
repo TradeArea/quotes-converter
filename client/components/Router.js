@@ -12,7 +12,8 @@ var React = require('react'),
     NotFoundRoute = Router.NotFoundRoute;
 
 var Application = require('./Application'),
-    Form = require('./Form/Form');
+    Form = require('./Form/Form'),
+    MainGrid = require('./MainGrid/MainGrid');
 
 var Router = React.createClass({
 
@@ -20,7 +21,7 @@ var Router = React.createClass({
         return (
             <Routes location="history" preserveScrollPosition>
                 <Route handler={Application}>
-                    <DefaultRoute handler={Form} />
+                    <DefaultRoute handler={MainGrid} />
                 </Route>
             </Routes>
         );
