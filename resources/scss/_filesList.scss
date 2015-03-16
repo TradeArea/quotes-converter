@@ -1,0 +1,21 @@
+
+
+.files-list {
+  text-align: left;
+
+  .files-list-item {
+    //@include size(100%, 60px);
+    border: solid 1px #ccc;
+    list-style-type: none;
+
+    &:hover {
+      background-color: #dae3ff;
+    }
+
+    .name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}

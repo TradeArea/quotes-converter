@@ -3,12 +3,6 @@
  */
 .grid-component {
   text-align: center; }
-  .grid-component .left-col {
-    background-color: #0000FF; }
-  .grid-component .center-col {
-    background-color: #008800; }
-  .grid-component .right-col {
-    background-color: #5c8a00; }
   .grid-component .select-files-area {
     width: 100%;
     height: 50px;
@@ -19,6 +13,18 @@
     margin: 0 auto;
     text-align: center;
     cursor: pointer; }
+
+.files-list {
+  text-align: left; }
+  .files-list .files-list-item {
+    border: solid 1px #ccc;
+    list-style-type: none; }
+    .files-list .files-list-item:hover {
+      background-color: #dae3ff; }
+    .files-list .files-list-item .name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; }
 
 /*! normalize.css v3.0.1 | MIT License | git.io/normalize */
 html {

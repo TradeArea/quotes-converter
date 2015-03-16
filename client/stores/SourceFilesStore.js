@@ -23,9 +23,27 @@ var SourceFilesStore = Reflux.createStore({
     },
 
     handleAddFiles: function(files) {
-        debugger;
-        this.update(this.files.concat(files));
+
+
+        this.update(this.files.concat(this.excludeDublicate(files)));
+    },
+
+    excludeDublicate: function (files) {
+        var ln = this.files.length,
+            nln = files.length || 0,
+            result = [],
+            filtr = [];
+
+        for (var i = 0;i<nln;i++) {
+            !this.files.filter(function (item) {
+                return item.name == files[i].name && item.size == files[i].size;
+            }).length && result.push(files[i]);
+        }
+
+        return result;
     }
+
+
 
 });
 

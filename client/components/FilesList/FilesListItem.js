@@ -19,9 +19,9 @@ var FilesListItem = React.createClass({
 
     render: function () {
         return (
-            <li className="files-list">
+            <li className="files-list-item">
                 <Row>
-                    <Col md={7} xs={7} sm={7}>{this.props.file.name}</Col>
+                    <Col md={7} xs={7} sm={7} className="name">{this.props.file.name}</Col>
                     <Col md={5} xs={5} sm={5}>{this.props.file.size}</Col>
                 </Row>
                 <Row>
