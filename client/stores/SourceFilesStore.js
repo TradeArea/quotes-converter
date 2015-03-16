@@ -7,11 +7,17 @@
 var Reflux = require('reflux');
 var FilesActions = require('../actions/FilesActions');
 
+function filesEqual(f1, f2) {
+    return f1.file.name == f2.file.name && f1.file.size == f2.file.size;
+}
+
 var SourceFilesStore = Reflux.createStore({
     init: function () {
         this.files = [];
 
         this.listenTo(FilesActions.addFiles, this.handleAddFiles);
+        this.listenTo(FilesActions.selectFile, this.handleSelectFile);
+        this.listenTo(FilesActions.unSelectFile, this.handleUnSelectFile);
     },
 
     getDefaultData: function() {
@@ -23,20 +29,47 @@ var SourceFilesStore = Reflux.createStore({
     },
 
     handleAddFiles: function(files) {
+        var prep = this.excludeDublicate(files);
+        this.update(this.files.concat(prep));
+    },
 
+    // TODO: handleSelectFile/handleUnSelectFile ƒ”¡À»–Œ¬¿Õ»≈!
+    handleSelectFile: function (fileObject) {
+        debugger;
+        var result = this.files.concat([]),
+            ln = result.length;
 
-        this.update(this.files.concat(this.excludeDublicate(files)));
+        for (var i = 0;i<ln;i++) {
+            if (filesEqual(result[i], fileObject)) {
+                result[i].selected = true;
+                break;
+            }
+        }
+        this.update(result);
+    },
+
+    // TODO: handleSelectFile/handleUnSelectFile ƒ”¡À»–Œ¬¿Õ»≈!
+    handleUnSelectFile: function (fileObject) {
+        var result = this.files.concat([]),
+            ln = result.length;
+
+        for (var i = 0;i<ln;i++) {
+            if (filesEqual(result[i], fileObject)) {
+                result[i].selected = false;
+                break;
+            }
+        }
+        this.update(result);
     },
 
     excludeDublicate: function (files) {
         var ln = this.files.length,
             nln = files.length || 0,
-            result = [],
-            filtr = [];
+            result = [];
 
         for (var i = 0;i<nln;i++) {
             !this.files.filter(function (item) {
-                return item.name == files[i].name && item.size == files[i].size;
+                return filesEqual(item, files[i]); //item.file.name == files[i].file.name && item.file.size == files[i].file.size;
             }).length && result.push(files[i]);
         }
 

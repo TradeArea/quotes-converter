@@ -8,6 +8,10 @@
     border: solid 1px #ccc;
     list-style-type: none;
 
+    &.selected {
+      background-color: #cc7b44;
+    }
+
     &:hover {
       background-color: #dae3ff;
     }

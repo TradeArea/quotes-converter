@@ -19,6 +19,8 @@
   .files-list .files-list-item {
     border: solid 1px #ccc;
     list-style-type: none; }
+    .files-list .files-list-item.selected {
+      background-color: #cc7b44; }
     .files-list .files-list-item:hover {
       background-color: #dae3ff; }
     .files-list .files-list-item .name {
