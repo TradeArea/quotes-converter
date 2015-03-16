@@ -1,0 +1,10 @@
+/**
+ * Created by KlimMalgin on 25.10.2014.
+ */
+.application {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #ccc; }
