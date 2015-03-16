@@ -12,6 +12,10 @@
         </div>
     </script>
 
+    <script type="text/html" id="save-button-tpl">
+        <button class="save-btn">Test save</button>
+    </script>
+
 </head>
 <body>
 <div id="application"></div>
@@ -28,12 +32,18 @@
 <script src="app/modules/TimeMapper.js"></script>
 <script src="app/modules/QuotesDataConverter.js"></script>
 <script src="app/handlers/ChooseFilesHandler.js"></script>
+<!--<script src="app/handlers/SaveFileHandler.js"></script>-->
 <script src="app/layout/ChooseAreaCreator.js"></script>
+<script src="app/layout/SaveButtonCreator.js"></script>
 
 
 <script src="app/app.js"></script>
 
 <script>
+    debugger;
+    if (require) {
+        window.moment = require('./libs/moment');
+    }
     QC.init();
 </script>
 
