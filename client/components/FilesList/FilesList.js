@@ -8,12 +8,24 @@ var FilesListItem = require('./FilesListItem');
 
 var FilesList = React.createClass({
 
+    getDefaultProps: function () {
+        return {
+            files: []
+        };
+    },
 
+    prepareFilesList: function () {
+        return this.props.files.map(this.createFilesListItem);
+    },
+
+    createFilesListItem: function (fileItem) {
+        return <FilesListItem file={fileItem}/>;
+    },
 
     render: function () {
         return (
             <ul className="files-list">
-
+                {this.prepareFilesList()}
             </ul>
         );
     }
