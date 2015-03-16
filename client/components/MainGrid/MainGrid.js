@@ -16,9 +16,9 @@ var MainGrid = React.createClass({
         return (
             <div className="grid-component">
                 <Row>
-                    <Col className="left-col" md={5} >Left</Col>
-                    <Col className="center-col" md={2}>Center</Col>
-                    <Col className="right-col" md={5}>Right</Col>
+                    <Col className="left-col" md={5} xs={5} sm={5}>Left</Col>
+                    <Col className="center-col" md={2} xs={2} sm={2}>Center</Col>
+                    <Col className="right-col" md={5} xs={5} sm={5}>Right</Col>
                 </Row>
             </div>
         );

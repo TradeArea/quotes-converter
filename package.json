@@ -6,7 +6,7 @@
     "toolbar": true,
     "resizable": false,
     "width": 600,
-    "height": 400
+    "height": 450
   },
   "author": "KlimMalgin <fxklim@gmail.com> (https://github.com/KlimMalgin)",
   "dependencies": {
