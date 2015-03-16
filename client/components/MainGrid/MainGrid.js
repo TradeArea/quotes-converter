@@ -6,16 +6,23 @@
 
 var React = require('react');
 
+var Reflux = require('reflux'),
+    ListenerMixin = Reflux.ListenerMixin;
+
 var Bootstrap = require('react-bootstrap'),
     Row = Bootstrap.Row,
     Col = Bootstrap.Col;
 
+var SourceFilesStore = require('../../stores/SourceFilesStore');
+var FilesActions = require('../../actions/FilesActions');
 var ChooseFilesMixin = require('../../mixins/ChooseFilesMixin');
 
 var MainGrid = React.createClass({
 
     mixins: [
-        ChooseFilesMixin
+        ListenerMixin,
+        ChooseFilesMixin,
+        Reflux.connect(SourceFilesStore, 'files')
     ],
 
     componentDidMount: function () {
@@ -23,13 +30,14 @@ var MainGrid = React.createClass({
         this.chooseFilesActivate({
             drugnDropSelect: selectedEl,
             buttonSelect: selectedEl,
-            handleFiles: this.chooseFilesHandler
+            handleFiles: FilesActions.addFiles
         });
     },
 
-    chooseFilesHandler: function () {
+    /*chooseFilesHandler: function () {
         debugger;
-    },
+        FilesActions.addFiles();
+    },*/
 
     render: function () {
         return (

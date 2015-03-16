@@ -9,5 +9,4 @@ var React = require('react'),
     Router = require('./components/Router');
 
 window.React = React;
-debugger;
 React.renderComponent(<Router />, document.getElementsByClassName('main')[0]);

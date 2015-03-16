@@ -4,8 +4,6 @@
 
 
 function getFileElem () {
-    debugger;
-    //return document.getElementById('fileElem');
     return document.getElementsByClassName('fileInput')[0];
 }
 
@@ -24,7 +22,6 @@ function activate (options) {
     addEvent('dragover', dropbox, dragover);
     addEvent('drop', dropbox, drop);
     addEvent('click', button, function (e) {
-        debugger;
         if (fileElem) {
             fileElem.onchange = function (){
                 options.handleFiles(filterFilesList(this.files));
