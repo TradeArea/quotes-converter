@@ -15,15 +15,21 @@ var Bootstrap = require('react-bootstrap'),
 
 var SourceFilesStore = require('../../stores/SourceFilesStore');
 var FilesActions = require('../../actions/FilesActions');
-var ChooseFilesMixin = require('../../mixins/ChooseFilesMixin');
+var ChooseFilesMixin = require('../../mixins/ChooseFilesMixin'),
+    QuotesConverterMixin = require('../../mixins/QuotesConverterMixin'),
+    FileReaderMixin = require('../../mixins/FileReaderMixin');
 
 var FilesList = require('../FilesList/FilesList');
+
+var fs = require('fs');
 
 var MainGrid = React.createClass({
 
     mixins: [
         ListenerMixin,
+        FileReaderMixin,
         ChooseFilesMixin,
+        QuotesConverterMixin,
         Reflux.connect(SourceFilesStore, 'files')
     ],
 
@@ -41,8 +47,61 @@ var MainGrid = React.createClass({
         FilesActions.addFiles();
     },*/
 
-    handleClickButton: function () {
+    createResultFileData: function (resultArray) {
+        console.log(resultArray);
+
+        var ln = resultArray.length,
+            resultData = "";
+
+        for (var i = 0;i<ln;i++) {
+            resultArray[i] = resultArray[i].join(',');
+        }
+
+        resultData = resultArray.join('\n');
         debugger;
+        fs.writeFile("./test.csv", resultData, function(err) {
+            debugger;
+            if(err) {
+                return console.log(err);
+            }
+
+            console.log("The file was saved!");
+        });
+
+    },
+
+    fileDataAnalizer: function (e) {
+        var FileArray = e.target.result.split('\n'),
+            faLn = FileArray.length;
+
+        for (var i = 0; i<faLn; i++) {
+            FileArray[i] = FileArray[i].split(',');
+        }
+
+        this.createConverter()
+            .data({
+                sourceData: FileArray,
+                targetResolution: 60
+            })
+            .convert()
+            .done(this.createResultFileData);
+    },
+
+    handleClickButton: function () {
+        var selectedFiles = this.state.files.filter(function(f) { return f.selected == true; }),
+            ln = selectedFiles.length;
+
+        /*!!ln &&
+        this.createConverter()*/
+
+        var file = selectedFiles[0].file,
+            size = file.size - 1;
+
+        this.createReader()
+            .read(file)
+            .range(0, size)
+            .done(this.fileDataAnalizer)
+            .go();
     },
 
     render: function () {
