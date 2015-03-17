@@ -35,7 +35,6 @@ var SourceFilesStore = Reflux.createStore({
 
     // TODO: handleSelectFile/handleUnSelectFile дсакхпнбюмхе!
     handleSelectFile: function (fileObject) {
-        debugger;
         var result = this.files.concat([]),
             ln = result.length;
 

@@ -8,7 +8,14 @@
   }
 
   .center-col {
+    @include relative;
+    text-align: center;
+    min-height: 200px;
     //background-color: #008800;
+
+    .to-h1 {
+      @include absolute(auto, auto, 0);
+    }
   }
 
   .right-col {

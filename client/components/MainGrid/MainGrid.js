@@ -41,6 +41,10 @@ var MainGrid = React.createClass({
         FilesActions.addFiles();
     },*/
 
+    handleClickButton: function () {
+        debugger;
+    },
+
     render: function () {
         return (
             <div className="grid-component">
@@ -51,6 +55,7 @@ var MainGrid = React.createClass({
                     <Col className="center-col" md={2} xs={2} sm={2}>
                         Center
                         <div className="select-files-area">Выберите файлы</div>
+                        <button onClick={this.handleClickButton} className="to-h1">Сконвертировать в H1</button>
                     </Col>
                     <Col className="right-col" md={5} xs={5} sm={5}>Right</Col>
                 </Row>
