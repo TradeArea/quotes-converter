@@ -6,7 +6,7 @@
 
 
 var React = require('react'),
-    Router = require('./components/Router');
+    Application = require('./components/Application');
 
 window.React = React;
-React.renderComponent(<Router />, document.getElementsByClassName('main')[0]);
+React.renderComponent(<Application />, document.getElementsByClassName('main')[0]);

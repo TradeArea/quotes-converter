@@ -7,6 +7,8 @@
 var React = require('react/addons'),
     cs = React.addons.classSet;
 
+var MainGrid = require('./MainGrid/MainGrid');
+
 var Application = React.createClass({
 
     render: function () {
@@ -16,7 +18,7 @@ var Application = React.createClass({
 
         return (
             <div className={cs(classes)}>
-                {this.props.activeRouteHandler()}
+                <MainGrid />
             </div>
         );
     }
