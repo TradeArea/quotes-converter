@@ -229,7 +229,7 @@ module.exports = {
         };
 
         Converter.prototype.done = function (callback) {
-            callback(this.resultArray);
+            callback(this.resultArray, this.source);
             return this;
         };
 

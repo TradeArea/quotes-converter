@@ -40,10 +40,12 @@ module.exports = (function () {
         return this;
     };
 
-    Reader.prototype.go = function () {
+    Reader.prototype.go = function (beforeRead) {
+        beforeRead && beforeRead(this.file);
         this.reader.readAsBinaryString(this.blob);
         return this;
     };
+
 
 
 

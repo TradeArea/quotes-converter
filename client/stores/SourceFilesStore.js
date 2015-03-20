@@ -8,7 +8,7 @@ var Reflux = require('reflux');
 var FilesActions = require('../actions/FilesActions');
 
 function filesEqual(f1, f2) {
-    return f1.file.name == f2.file.name && f1.file.size == f2.file.size;
+    return f1.name == f2.name && f1.size == f2.size;
 }
 
 var SourceFilesStore = Reflux.createStore({
@@ -18,6 +18,8 @@ var SourceFilesStore = Reflux.createStore({
         this.listenTo(FilesActions.addFiles, this.handleAddFiles);
         this.listenTo(FilesActions.selectFile, this.handleSelectFile);
         this.listenTo(FilesActions.unSelectFile, this.handleUnSelectFile);
+        // --
+        this.listenTo(FilesActions.createResultFile, this.handleCreateResultFile);
     },
 
     getDefaultData: function() {
@@ -33,13 +35,13 @@ var SourceFilesStore = Reflux.createStore({
         this.update(this.files.concat(prep));
     },
 
-    // TODO: handleSelectFile/handleUnSelectFile ������������!
+    // TODO: handleSelectFile/handleUnSelectFile ДУБЛИРОВАНИЕ!
     handleSelectFile: function (fileObject) {
         var result = this.files.concat([]),
             ln = result.length;
 
         for (var i = 0;i<ln;i++) {
-            if (filesEqual(result[i], fileObject)) {
+            if (filesEqual(result[i].file, fileObject.file)) {
                 result[i].selected = true;
                 break;
             }
@@ -47,18 +49,38 @@ var SourceFilesStore = Reflux.createStore({
         this.update(result);
     },
 
-    // TODO: handleSelectFile/handleUnSelectFile ������������!
+    // TODO: handleSelectFile/handleUnSelectFile ДУБЛИРОВАНИЕ!
     handleUnSelectFile: function (fileObject) {
         var result = this.files.concat([]),
             ln = result.length;
 
         for (var i = 0;i<ln;i++) {
-            if (filesEqual(result[i], fileObject)) {
+            if (filesEqual(result[i].file, fileObject.file)) {
                 result[i].selected = false;
                 break;
             }
         }
         this.update(result);
+    },
+
+    /**
+     * Удаляем обрабатываемый файл из списка исходных
+     * @param file
+     */
+    handleCreateResultFile: function (file) {
+        var files = this.files.concat([]),
+            ln = files.length,
+            index = -1;
+
+        for (var i = 0;i<ln;i++) {
+            if (filesEqual(files[i].file, file)) {
+                index = i;
+                break;
+            }
+        }
+
+        files.splice(index, 1);
+        this.update(files);
     },
 
     excludeDublicate: function (files) {

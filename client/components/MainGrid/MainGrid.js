@@ -24,8 +24,6 @@ var ChooseFilesMixin = require('../../mixins/ChooseFilesMixin'),
 
 var FilesList = require('../FilesList/FilesList');
 
-var fs = require('fs');
-
 var MainGrid = React.createClass({
 
     mixins: [
@@ -34,7 +32,8 @@ var MainGrid = React.createClass({
         ChooseFilesMixin,
         QuotesConverterMixin,
         Reflux.connect(SourceFilesStore, 'files'),
-        Reflux.connect(ResultFilesStore, 'resultFiles')
+        Reflux.connect(ResultFilesStore, 'resultFiles'),
+        Reflux.listenTo(FilesActions.convertNextFile, 'convertNextFile')
     ],
 
     componentDidMount: function () {
@@ -46,12 +45,7 @@ var MainGrid = React.createClass({
         });
     },
 
-    /*chooseFilesHandler: function () {
-        debugger;
-        FilesActions.addFiles();
-    },*/
-
-    createResultFileData: function (resultArray) {
+    createResultFileData: function (sourceFile, resultArray) {
         console.log(resultArray);
 
         var ln = resultArray.length,
@@ -62,19 +56,10 @@ var MainGrid = React.createClass({
         }
 
         resultData = resultArray.join('\n');
-        debugger;
-        fs.writeFile("./test.csv", resultData, function(err) {
-            debugger;
-            if(err) {
-                return console.log(err);
-            }
-
-            console.log("The file was saved!");
-        });
-
+        FilesActions.completeResultFile(sourceFile, resultData);
     },
 
-    fileDataAnalizer: function (e) {
+    fileDataAnalizer: function (file, e) {
         var FileArray = e.target.result.split('\n'),
             faLn = FileArray.length;
 
@@ -88,27 +73,29 @@ var MainGrid = React.createClass({
                 targetResolution: 60
             })
             .convert()
-            .done(this.createResultFileData);
+            .done(this.createResultFileData.bind(this, file));
     },
 
-    handleClickButton: function () {
-        var selectedFiles = this.state.files.filter(function(f) { return f.selected == true; }),
-            ln = selectedFiles.length;
-
-        /*!!ln &&
-        this.createConverter()*/
-
-        var file = selectedFiles[0].file,
+    readFile: function (fileObject) {
+        var file = fileObject.file,
             size = file.size - 1;
 
         this.createReader()
             .read(file)
             .range(0, size)
-            .done(this.fileDataAnalizer)
-            .go();
+            .done(this.fileDataAnalizer.bind(this, file))
+            .go(FilesActions.createResultFile);
+    },
+
+    convertNextFile: function () {
+        var selectedFiles = this.state.files.filter(function(f) { return f.selected == true; }),
+            ln = selectedFiles.length;
+        debugger;
+        !!ln && this.readFile(selectedFiles[0]);
     },
 
     render: function () {
+        //var disabledButtonState = !!this.state.files.filter(function(f) { return f.selected == true; }).length ? "enabled": "disabled";
         return (
             <div className="grid-component">
                 <Row>
@@ -117,7 +104,7 @@ var MainGrid = React.createClass({
                     </Col>
                     <Col className="center-col" md={2} xs={2} sm={2}>
                         <div className="select-files-area">Выберите файлы</div>
-                        <button onClick={this.handleClickButton} className="to-h1">Сконвертировать в H1</button>
+                        <button onClick={FilesActions.convertNextFile} className="to-h1">Сконвертировать в H1</button>
                     </Col>
                     <Col className="right-col" md={5} xs={5} sm={5}>
                         <FilesList files={this.state.resultFiles} />
