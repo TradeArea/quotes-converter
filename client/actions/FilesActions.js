@@ -19,7 +19,7 @@ var saveFileDef = {
     preEmit: function (fileObject) {
         try {
             FS && FS.writeFile &&
-            FS.writeFile("C:\\history\\" + fileObject.name, fileObject.result, function(err) {
+            FS.writeFile("D:\\" + fileObject.name, fileObject.resultData, function(err) {
                 debugger;
                 if(err) {
                     return console.log(err);

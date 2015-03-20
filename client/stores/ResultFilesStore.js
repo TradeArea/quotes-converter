@@ -47,7 +47,7 @@ var ResultFilesStore = Reflux.createStore({
     handleCompleteResultFile: function (sourceFile, resultData) {
         var files = this.resultFiles.concat([]),
             arrName = sourceFile.name.split('.'),
-            name = arrName[0] + "_CONVER_TO_60" + arrName[1],
+            name = arrName[0] + "_CONVER_TO_60." + arrName[1],
             ln = files.length,
             result = null;
 
@@ -76,7 +76,7 @@ var ResultFilesStore = Reflux.createStore({
 
         debugger;
         for (var i = 0;i<ln;i++) {
-            if (filesEqual(files.file, fileObject.file)) {
+            if (filesEqual(files[i].file, fileObject.file)) {
                 files[i].saved = true;
                 break;
             }
