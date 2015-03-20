@@ -13,8 +13,11 @@ var Bootstrap = require('react-bootstrap'),
     Row = Bootstrap.Row,
     Col = Bootstrap.Col;
 
-var SourceFilesStore = require('../../stores/SourceFilesStore');
 var FilesActions = require('../../actions/FilesActions');
+
+var SourceFilesStore = require('../../stores/SourceFilesStore'),
+    ResultFilesStore = require('../../stores/ResultFilesStore');
+
 var ChooseFilesMixin = require('../../mixins/ChooseFilesMixin'),
     QuotesConverterMixin = require('../../mixins/QuotesConverterMixin'),
     FileReaderMixin = require('../../mixins/FileReaderMixin');
@@ -30,7 +33,8 @@ var MainGrid = React.createClass({
         FileReaderMixin,
         ChooseFilesMixin,
         QuotesConverterMixin,
-        Reflux.connect(SourceFilesStore, 'files')
+        Reflux.connect(SourceFilesStore, 'files'),
+        Reflux.connect(ResultFilesStore, 'resultFiles')
     ],
 
     componentDidMount: function () {
@@ -112,11 +116,12 @@ var MainGrid = React.createClass({
                         <FilesList files={this.state.files} />
                     </Col>
                     <Col className="center-col" md={2} xs={2} sm={2}>
-                        Center
                         <div className="select-files-area">Выберите файлы</div>
                         <button onClick={this.handleClickButton} className="to-h1">Сконвертировать в H1</button>
                     </Col>
-                    <Col className="right-col" md={5} xs={5} sm={5}>Right</Col>
+                    <Col className="right-col" md={5} xs={5} sm={5}>
+                        <FilesList files={this.state.resultFiles} />
+                    </Col>
                 </Row>
             </div>
         );

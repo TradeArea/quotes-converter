@@ -19,7 +19,10 @@ var addFilesDef = {
 var FilesActions = {
     addFiles: Reflux.createAction(addFilesDef),
     selectFile: Reflux.createAction(),
-    unSelectFile: Reflux.createAction()
+    unSelectFile: Reflux.createAction(),
+    // --
+    createResultFile: Reflux.createAction(),
+    completeResultFile: Reflux.createAction()
 };
 
 module.exports = FilesActions;
