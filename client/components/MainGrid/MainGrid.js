@@ -40,7 +40,8 @@ var MainGrid = React.createClass({
 
     getInitialState: function () {
         return {
-            cFile: null
+            cFile: null,
+            progress: "0%"
         };
     },
 
@@ -66,11 +67,15 @@ var MainGrid = React.createClass({
 
         resultData = resultArray.join('\n');
         FilesActions.completeResultFile(sourceFile.file, resultData);
+        this.setState({
+            progress: "0%"
+        });
     },
 
     fileDataAnalizer: function (file, e) {
         var FileArray = e.target.result.split('\n'),
-            faLn = FileArray.length;
+            faLn = FileArray.length,
+            that = this;
 
         for (var i = 0; i<faLn; i++) {
             FileArray[i] = FileArray[i].split(',');
@@ -81,7 +86,14 @@ var MainGrid = React.createClass({
                 sourceData: FileArray,
                 targetResolution: 60
             })
-            .convert(/*this.createResultFileData.bind(this, file)*/);
+            .convert(function (index, count) {
+                var onePercent = count / 100,
+                    progress = (index / onePercent).toFixed(1);
+
+                that.setState({
+                    progress: progress + "%"
+                });
+            });
     },
 
     readFile: function (fileObject) {
@@ -120,6 +132,7 @@ var MainGrid = React.createClass({
                         <FilesList files={this.state.files} />
                     </Col>
                     <Col className="center-col" md={2} xs={2} sm={2}>
+                        <div className="progress">{this.state.progress}</div>
                         <div className="select-files-area">Выберите файлы</div>
                         <button onClick={FilesActions.convertNextFile} className="to-h1">Сконвертировать в H1</button>
                     </Col>

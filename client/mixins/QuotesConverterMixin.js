@@ -55,17 +55,19 @@ var getStartPoint = function (realStartDate, realStartTime, resolution) {
 };
 
 
-function convertIteration (i, timeFormatter, timeItemPrev, resultArrayIndex, calculatePeriodStart, calculatePeriodEnd, resolutionSeconds, resultArray) {
+function convertIteration (i, timeFormatter, timeItemPrev, resultArrayIndex, calculatePeriodStart, calculatePeriodEnd, resolutionSeconds, resultArray, callback) {
     var timeItem,
         current,
-        LOGGED = true;
+        LOGGED = false;
     //debugger;
+    setImmediate(callback.bind({}, i, this.source.length));
+
     timeItem = moment(this.source[i][0] + " " + this.source[i][1], timeFormatter).unix();
     if (timeItem < this.startMoment) {
         LOGGED && console.log("> Пропускаем " + this.source[i][0] + " " + this.source[i][1]);
         //continue;
         i++;
-        if (i < this.source.length) setImmediate((convertIteration).bind(this, i, timeFormatter, timeItemPrev, resultArrayIndex, calculatePeriodStart, calculatePeriodEnd, resolutionSeconds, resultArray));
+        if (i < this.source.length) setImmediate((convertIteration).bind(this, i, timeFormatter, timeItemPrev, resultArrayIndex, calculatePeriodStart, calculatePeriodEnd, resolutionSeconds, resultArray, callback));
         else ConverterActions.convertComplete(resultArray);
         return;
     }
@@ -126,7 +128,7 @@ function convertIteration (i, timeFormatter, timeItemPrev, resultArrayIndex, cal
         }
     }
     i++;
-    if (i < this.source.length) setImmediate((convertIteration).bind(this, i, timeFormatter, timeItemPrev, resultArrayIndex, calculatePeriodStart, calculatePeriodEnd, resolutionSeconds, resultArray));
+    if (i < this.source.length) setImmediate((convertIteration).bind(this, i, timeFormatter, timeItemPrev, resultArrayIndex, calculatePeriodStart, calculatePeriodEnd, resolutionSeconds, resultArray, callback));
     else ConverterActions.convertComplete(resultArray);
 }
 
@@ -242,7 +244,7 @@ module.exports = {
             // Date,Time,OPEN,HIGH,LOW,CLOSE,Volume
             LOGGED && console.info('Start convert');
             debugger;
-            setImmediate((convertIteration).bind(this, i, timeFormatter, timeItemPrev, resultArrayIndex, calculatePeriodStart, calculatePeriodEnd, resolutionSeconds, resultArray));
+            setImmediate((convertIteration).bind(this, i, timeFormatter, timeItemPrev, resultArrayIndex, calculatePeriodStart, calculatePeriodEnd, resolutionSeconds, resultArray, callback));
 
             //for (var i = 0;i<ln;i++) {  }
 
