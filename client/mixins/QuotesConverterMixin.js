@@ -3,7 +3,15 @@
  */
 
 var moment = require('moment');
+var setImmediate = require('setimmediate');
 
+if (setImmediate.constructor !== Function) {
+    if (window && window.setImmediate) {
+        setImmediate = window.setImmediate;
+    }
+}
+
+var ConverterActions = require('../actions/ConverterActions');
 
 /**
  * Когда вычисляем дату с которой начнем строить результирующий набор данных - какая-то начальная часть
@@ -46,6 +54,81 @@ var getStartPoint = function (realStartDate, realStartTime, resolution) {
     }
 };
 
+
+function convertIteration (i, timeFormatter, timeItemPrev, resultArrayIndex, calculatePeriodStart, calculatePeriodEnd, resolutionSeconds, resultArray) {
+    var timeItem,
+        current,
+        LOGGED = true;
+    //debugger;
+    timeItem = moment(this.source[i][0] + " " + this.source[i][1], timeFormatter).unix();
+    if (timeItem < this.startMoment) {
+        LOGGED && console.log("> Пропускаем " + this.source[i][0] + " " + this.source[i][1]);
+        //continue;
+        i++;
+        if (i < this.source.length) setImmediate((convertIteration).bind(this, i, timeFormatter, timeItemPrev, resultArrayIndex, calculatePeriodStart, calculatePeriodEnd, resolutionSeconds, resultArray));
+        else ConverterActions.convertComplete(resultArray);
+        return;
+    }
+    timeItemPrev = i > 0 ? moment(this.source[i-1][0] + " " + this.source[i-1][1], timeFormatter).unix() : -1;
+
+    // Если время обрабатываемого тика в пределах вычисляемого периода
+    if (calculatePeriodStart < timeItem && timeItem < calculatePeriodEnd) {
+        // Очередной элемент для обработки
+        current = this.source[i];
+
+        // Если элемент текущего периода еще небыл создан в массиве-приемнике
+        if (!resultArray[resultArrayIndex]) {
+            current[0] = moment.unix(calculatePeriodStart).format(dateFormat);
+            current[1] = moment.unix(calculatePeriodStart).format(timeFormat);
+            resultArray.push(current);
+            LOGGED && console.log("Элемент отсутствует. Создаем: " + current[0] + " " + current[1] + ". Ln: " + resultArray.length);
+        }
+        // Если элемент уже существует
+        else {
+            if (parseFloat(resultArray[resultArrayIndex][3]) < parseFloat(current[3])) { resultArray[resultArrayIndex][3] = current[3]; }
+            if (parseFloat(resultArray[resultArrayIndex][4]) > parseFloat(current[4])) { resultArray[resultArrayIndex][4] = current[4]; }
+            resultArray[resultArrayIndex][5] = current[5];
+            LOGGED && console.log("Элемент существует. Корректируем параметры.");
+        }
+
+    } else
+    // Если очередной обрабатываемый тик вышел за пределы целевого диапазона
+    if (timeItem >= calculatePeriodEnd) {
+        // Переходим в следующий целевой диапазон
+        // --
+        current = null;
+
+        /**
+         * Здесь нужно не просто переходить к следующему диапазону, а проверять timeItem на отставание
+         * от i-1 элемента на время меньшее чем targetResolution. Это нужно чтобы обработать
+         * белые пятна в исходных данных и исключить появление фантомных элементов в массиве-приемнике
+         */
+
+        // Если timeItem отстает от предыдущего элемента на время не большее чем целевое разрешение (условие исключения белых пятен)
+        if (timeItem - timeItemPrev <= resolutionSeconds) {
+            LOGGED && console.log("Вышли за пределы диапазона. Меняем диапазон.");
+
+            // обозначаем границы нового периода
+            calculatePeriodStart = calculatePeriodEnd;
+            calculatePeriodEnd = calculatePeriodStart + resolutionSeconds;
+
+            // порядковый номер элемента в массиве-приемнике
+            resultArrayIndex++;
+        } else {
+            LOGGED && console.info('>> История отсутствует! Перескакиваем через белое пятно. <<');
+
+            // обозначаем границы нового периода
+            calculatePeriodStart = getStartPoint(this.source[i][0], this.source[i][1], this.targetResolution);
+            calculatePeriodEnd = calculatePeriodStart + resolutionSeconds;
+
+            // порядковый номер элемента в массиве-приемнике
+            resultArrayIndex++;
+        }
+    }
+    i++;
+    if (i < this.source.length) setImmediate((convertIteration).bind(this, i, timeFormatter, timeItemPrev, resultArrayIndex, calculatePeriodStart, calculatePeriodEnd, resolutionSeconds, resultArray));
+    else ConverterActions.convertComplete(resultArray);
+}
 
 module.exports = {
 
@@ -141,7 +224,7 @@ module.exports = {
             return this;
         };
 
-        Converter.prototype.convert = function () {
+        Converter.prototype.convert = function (callback) {
             this.prepare();
             var resolutionSeconds = this.targetResolution * 60,
                 timeFormatter = dateFormat + " " + timeFormat,
@@ -151,87 +234,28 @@ module.exports = {
                 resultArrayIndex = 0,
                 resultArray = [],
                 timeItem, timeItemPrev,
-                current;
+                current,
+                i = 0;
+            var LOGGED = true;
 
             //           2    3    4   5
             // Date,Time,OPEN,HIGH,LOW,CLOSE,Volume
-            console.info('Start convert');
+            LOGGED && console.info('Start convert');
+            debugger;
+            setImmediate((convertIteration).bind(this, i, timeFormatter, timeItemPrev, resultArrayIndex, calculatePeriodStart, calculatePeriodEnd, resolutionSeconds, resultArray));
 
-            for (var i = 0;i<ln;i++) {
-                timeItem = moment(this.source[i][0] + " " + this.source[i][1], timeFormatter).unix();
-                if (timeItem < this.startMoment) {
-                    console.log("> Пропускаем " + this.source[i][0] + " " + this.source[i][1]);
-                    continue;
-                }
-                timeItemPrev = i > 0 ? moment(this.source[i-1][0] + " " + this.source[i-1][1], timeFormatter).unix() : -1;
+            //for (var i = 0;i<ln;i++) {  }
 
-                // Если время обрабатываемого тика в пределах вычисляемого периода
-                if (calculatePeriodStart < timeItem && timeItem < calculatePeriodEnd) {
-                    // Очередной элемент для обработки
-                    current = this.source[i];
-
-                    // Если элемент текущего периода еще небыл создан в массиве-приемнике
-                    if (!resultArray[resultArrayIndex]) {
-                        current[0] = moment.unix(calculatePeriodStart).format(dateFormat);
-                        current[1] = moment.unix(calculatePeriodStart).format(timeFormat);
-                        resultArray.push(current);
-                        console.log("Элемент отсутствует. Создаем: " + current[0] + " " + current[1] + ". Ln: " + resultArray.length);
-                    }
-                    // Если элемент уже существует
-                    else {
-                        if (parseFloat(resultArray[resultArrayIndex][3]) < parseFloat(current[3])) { resultArray[resultArrayIndex][3] = current[3]; }
-                        if (parseFloat(resultArray[resultArrayIndex][4]) > parseFloat(current[4])) { resultArray[resultArrayIndex][4] = current[4]; }
-                        resultArray[resultArrayIndex][5] = current[5];
-                        console.log("Элемент существует. Корректируем параметры.");
-                    }
-
-                } else
-                // Если очередной обрабатываемый тик вышел за пределы целевого диапазона
-                if (timeItem >= calculatePeriodEnd) {
-                    // Переходим в следующий целевой диапазон
-                    // --
-                    current = null;
-
-                    /**
-                     * Здесь нужно не просто переходить к следующему диапазону, а проверять timeItem на отставание
-                     * от i-1 элемента на время меньшее чем targetResolution. Это нужно чтобы обработать
-                     * белые пятна в исходных данных и исключить появление фантомных элементов в массиве-приемнике
-                     */
-
-                    // Если timeItem отстает от предыдущего элемента на время не большее чем целевое разрешение (условие исключения белых пятен)
-                    if (timeItem - timeItemPrev <= resolutionSeconds) {
-                        console.log("Вышли за пределы диапазона. Меняем диапазон.");
-
-                        // обозначаем границы нового периода
-                        calculatePeriodStart = calculatePeriodEnd;
-                        calculatePeriodEnd = calculatePeriodStart + resolutionSeconds;
-
-                        // порядковый номер элемента в массиве-приемнике
-                        resultArrayIndex++;
-                    } else {
-                        console.info('>> История отсутствует! Перескакиваем через белое пятно. <<');
-
-                        // обозначаем границы нового периода
-                        calculatePeriodStart = getStartPoint(this.source[i][0], this.source[i][1], this.targetResolution);
-                        calculatePeriodEnd = calculatePeriodStart + resolutionSeconds;
-
-                        // порядковый номер элемента в массиве-приемнике
-                        resultArrayIndex++;
-                    }
-
-                }
-
-            }
-
-            this.resultArray = resultArray;
+            // this.resultArray = resultArray;
+            // callback(this.resultArray, this.source);
 
             return this;
         };
 
-        Converter.prototype.done = function (callback) {
+        /*Converter.prototype.done = function (callback) {
             callback(this.resultArray, this.source);
             return this;
-        };
+        };*/
 
         return function () {
             return new Converter();

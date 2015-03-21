@@ -13,7 +13,8 @@ var Bootstrap = require('react-bootstrap'),
     Row = Bootstrap.Row,
     Col = Bootstrap.Col;
 
-var FilesActions = require('../../actions/FilesActions');
+var FilesActions = require('../../actions/FilesActions'),
+    ConverterActions = require('../../actions/ConverterActions');
 
 var SourceFilesStore = require('../../stores/SourceFilesStore'),
     ResultFilesStore = require('../../stores/ResultFilesStore');
@@ -33,8 +34,15 @@ var MainGrid = React.createClass({
         QuotesConverterMixin,
         Reflux.connect(SourceFilesStore, 'files'),
         Reflux.connect(ResultFilesStore, 'resultFiles'),
-        Reflux.listenTo(FilesActions.convertNextFile, 'convertNextFile')
+        Reflux.listenTo(FilesActions.convertNextFile, 'convertNextFile'),
+        Reflux.listenTo(ConverterActions.convertComplete, 'convertComplete')
     ],
+
+    getInitialState: function () {
+        return {
+            cFile: null
+        };
+    },
 
     componentDidMount: function () {
         var selectedEl = document.getElementsByClassName('select-files-area')[0];
@@ -45,7 +53,8 @@ var MainGrid = React.createClass({
         });
     },
 
-    createResultFileData: function (sourceFile, resultArray) {
+    createResultFileData: function (resultArray) {
+        var sourceFile = this.state.cFile;
         console.log(resultArray);
 
         var ln = resultArray.length,
@@ -56,7 +65,7 @@ var MainGrid = React.createClass({
         }
 
         resultData = resultArray.join('\n');
-        FilesActions.completeResultFile(sourceFile, resultData);
+        FilesActions.completeResultFile(sourceFile.file, resultData);
     },
 
     fileDataAnalizer: function (file, e) {
@@ -72,8 +81,7 @@ var MainGrid = React.createClass({
                 sourceData: FileArray,
                 targetResolution: 60
             })
-            .convert()
-            .done(this.createResultFileData.bind(this, file));
+            .convert(/*this.createResultFileData.bind(this, file)*/);
     },
 
     readFile: function (fileObject) {
@@ -87,11 +95,20 @@ var MainGrid = React.createClass({
             .go(FilesActions.createResultFile);
     },
 
+    convertComplete: function (resultArray) {
+        this.createResultFileData(resultArray);
+    },
+
     convertNextFile: function () {
         var selectedFiles = this.state.files.filter(function(f) { return f.selected == true; }),
             ln = selectedFiles.length;
         debugger;
-        !!ln && this.readFile(selectedFiles[0]);
+        if (!!ln) {
+            this.setState({
+                cFile: selectedFiles[0]
+            });
+            this.readFile(selectedFiles[0]);
+        }
     },
 
     render: function () {
