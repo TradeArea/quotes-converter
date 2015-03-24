@@ -142,15 +142,6 @@ module.exports = {
         var dateFormat = "YYYY.MM.DD",  // 2000.05.30
             timeFormat = "HH:mm";       // 17:27
 
-        /** !!TODO!!
-         * ВременнЫе расчеты рекомендуется проводить в timestamp-секундах.
-         * - Вычисление целевого промежутка в секундах
-         * - Проход по источнику в пределах целевого промежутка
-         * - Соответствующие вычисления
-         * !!TODO!!
-         * @constructor
-         */
-
         function Converter() {
             /**
              * Исходный массив данных для конвертации
@@ -210,7 +201,7 @@ module.exports = {
          * @param options
          * @returns {Converter}
          */
-        Converter.prototype.data = function (options) {
+        Converter.prototype.params = function (options) {
             this.source = options.sourceData || [];
             this.targetResolution = options.targetResolution || 0;
             return this;
@@ -222,7 +213,6 @@ module.exports = {
          */
         Converter.prototype.prepare = function () {
             this.startMoment = getStartPoint(this.source[0][0], this.source[0][1], this.targetResolution);
-            //resolutionSeconds = this.targetResolution * 60;
             return this;
         };
 
@@ -243,21 +233,9 @@ module.exports = {
             //           2    3    4   5
             // Date,Time,OPEN,HIGH,LOW,CLOSE,Volume
             LOGGED && console.info('Start convert');
-            debugger;
             setImmediate((convertIteration).bind(this, i, timeFormatter, timeItemPrev, resultArrayIndex, calculatePeriodStart, calculatePeriodEnd, resolutionSeconds, resultArray, callback));
-
-            //for (var i = 0;i<ln;i++) {  }
-
-            // this.resultArray = resultArray;
-            // callback(this.resultArray, this.source);
-
             return this;
         };
-
-        /*Converter.prototype.done = function (callback) {
-            callback(this.resultArray, this.source);
-            return this;
-        };*/
 
         return function () {
             return new Converter();

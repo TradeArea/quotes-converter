@@ -10,17 +10,24 @@ var FilesActions = require('./actions/FilesActions');
 var SourceFilesStore = require('./stores/SourceFilesStore'),
     ResultFilesStore = require('./stores/ResultFilesStore');
 
+var CreateFileReader = require('./mixins/FileReaderMixin').createReader;
+var CreateConverter = require('./mixins/QuotesConverterMixin').createConverter;
 
 var ConvertController = Reflux.createStore({
     init: function () {
         this.state = {
-            fileProcessing: null,
+            sourceFileProcessed: null,
+            convertProgress: 0,
             sourceFiles: [],
             resultFiles: []
         };
 
         this.listenTo(SourceFilesStore, this.changeSourceFiles);
         this.listenTo(ResultFilesStore, this.changeResultFiles);
+
+        this.listenTo(FilesActions.convertNextFile, this.convertNextFile);
+        this.listenTo(FilesActions.convertProgress, this.handleConvertProgress);
+        this.listenTo(FilesActions.convertComplete, this.handleConvertComplete);
     },
 
     getDefaultData: function() {
@@ -41,8 +48,64 @@ var ConvertController = Reflux.createStore({
         this.update(this.state);
     },
 
-    nextFileProcess: function () {
+    handleConvertProgress: function (progress) {
+        this.state.convertProgress = progress;
+        this.update(this.state);
+    },
 
+    convertNextFile: function () {
+        var files = this.state.sourceFiles;
+
+        if (!!files.length) {
+            this.state.sourceFileProcessed = files[0];
+            this.update(this.state);
+            this.readFile(files[0]);
+        }
+    },
+
+    // --
+
+    readFile: function (fileObject) {
+        CreateFileReader()
+            .readFile(fileObject)
+            .beforeRead(FilesActions.createResultFile)
+            .done(this.fileDataAnalizer);
+    },
+
+    fileDataAnalizer: function (e) {
+        var FileArray = e.target.result.split('\n'),
+            faLn = FileArray.length,
+            that = this;
+
+        for (var i = 0; i<faLn; i++) {
+            FileArray[i] = FileArray[i].split(',');
+        }
+
+        CreateConverter()
+            .params({
+                sourceData: FileArray,
+                targetResolution: 60
+            })
+            .convert(function (index, count) {
+                var onePercent = count / 100,
+                    progress = (index / onePercent).toFixed(1);
+                FilesActions.convertProgress(progress);
+            });
+    },
+
+    handleConvertComplete: function (resultArray) {
+        var sourceFile = this.state.sourceFileProcessed,
+            ln = resultArray.length,
+            resultData;
+
+        console.log(resultArray);
+
+        for (var i = 0;i<ln;i++) {
+            resultArray[i] = resultArray[i].join(',');
+        }
+
+        resultData = resultArray.join('\n');
+        FilesActions.completeResultFile(sourceFile.file, resultData);
     }
 
 });

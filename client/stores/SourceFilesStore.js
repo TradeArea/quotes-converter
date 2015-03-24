@@ -13,8 +13,6 @@ var SourceFilesStore = Reflux.createStore({
         this.files = [];
 
         this.listenTo(FilesActions.addFiles, this.handleAddFiles);
-        this.listenTo(FilesActions.selectFile, this.handleSelectFile);
-        this.listenTo(FilesActions.unSelectFile, this.handleUnSelectFile);
         // --
         this.listenTo(FilesActions.createResultFile, this.handleCreateResultFile);
     },
@@ -32,51 +30,23 @@ var SourceFilesStore = Reflux.createStore({
         this.update(this.files.concat(prep));
     },
 
-    // TODO: handleSelectFile/handleUnSelectFile ДУБЛИРОВАНИЕ!
-    handleSelectFile: function (fileObject) {
-        var result = this.files.concat([]),
-            ln = result.length;
-
-        for (var i = 0;i<ln;i++) {
-            if (filesEqual(result[i].file, fileObject.file)) {
-                result[i].selected = true;
-                break;
-            }
-        }
-        this.update(result);
-    },
-
-    // TODO: handleSelectFile/handleUnSelectFile ДУБЛИРОВАНИЕ!
-    handleUnSelectFile: function (fileObject) {
-        var result = this.files.concat([]),
-            ln = result.length;
-
-        for (var i = 0;i<ln;i++) {
-            if (filesEqual(result[i].file, fileObject.file)) {
-                result[i].selected = false;
-                break;
-            }
-        }
-        this.update(result);
-    },
-
     /**
-     * Удаляем обрабатываемый файл из списка исходных
-     * @param file
+     * Ставим файлу состояние progress
+     * @param fileObject
      */
-    handleCreateResultFile: function (file) {
+    handleCreateResultFile: function (fileObject) {
         var files = this.files.concat([]),
             ln = files.length,
             index = -1;
 
         for (var i = 0;i<ln;i++) {
-            if (filesEqual(files[i].file, file)) {
+            if (filesEqual(files[i], fileObject)) {
                 index = i;
                 break;
             }
         }
 
-        files.splice(index, 1);
+        files[index] = this.setFileAsProgress(files[index]);
         this.update(files);
     },
 
@@ -87,11 +57,16 @@ var SourceFilesStore = Reflux.createStore({
 
         for (var i = 0;i<nln;i++) {
             !this.files.filter(function (item) {
-                return filesEqual(item, files[i]); //item.file.name == files[i].file.name && item.file.size == files[i].file.size;
+                return filesEqual(item, files[i]);
             }).length && result.push(files[i]);
         }
 
         return result;
+    },
+
+    setFileAsProgress: function (fileObject) {
+        fileObject.progress = true;
+        return fileObject;
     }
 
 

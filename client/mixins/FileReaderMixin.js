@@ -5,14 +5,22 @@
 module.exports = (function () {
 
     function Reader() {
+        this.beforeCallback = function () {};
         this.reader = null;
+        this.fileObject = null;
         this.file = null;
         this.blob = null;
     }
 
-    Reader.prototype.read = function (file) {
-        this.file = file;
+    Reader.prototype.readFile = function (fileObject) {
+        this.fileObject = fileObject;
+        this.file = fileObject.file;
         this.reader = new FileReader();
+        return this.range(0, this.file.size - 1);
+    };
+
+    Reader.prototype.beforeRead = function (beforeCallback) {
+        this.beforeCallback = beforeCallback;
         return this;
     };
 
@@ -29,19 +37,20 @@ module.exports = (function () {
         return this;
     };
 
-    Reader.prototype.done = function (callback) {
+    Reader.prototype.done = function (success, error) {
         this.reader.onloadend = function(evt) {
             if (evt.target.readyState == FileReader.DONE) { // DONE == 2
-                callback.apply(this, arguments);
+                success && success.apply(this, arguments);
             } else {
                 console.error('State is not DONE!');
+                error && error.apply(this, arguments);
             }
         };
-        return this;
+        return this.start();
     };
 
-    Reader.prototype.go = function (beforeRead) {
-        beforeRead && beforeRead(this.file);
+    Reader.prototype.start = function () {
+        this.beforeCallback(this.fileObject);
         this.reader.readAsBinaryString(this.blob);
         return this;
     };

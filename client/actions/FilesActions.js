@@ -37,20 +37,28 @@ var saveFileDef = {
     }
 };
 
-
 var FilesActions = {
+    // Добавить набор файлов в список исходных
     addFiles: Reflux.createAction(addFilesDef),
-    selectFile: Reflux.createAction(),
-    unSelectFile: Reflux.createAction(),
+    /*selectFile: Reflux.createAction(),
+    unSelectFile: Reflux.createAction(),*/
     // --
+    // Сконвертировать следующий файл
     convertNextFile: Reflux.createAction(),
+    // Вернет текущий прогресс процесса конвертации
+    convertProgress: Reflux.createAction(),
+    // Конвертация очередного набора данных завершена
     convertComplete: Reflux.createAction(),
     // --
+    // Создать файл в списке результирующих файлов
     createResultFile: Reflux.createAction(),
     //progressResultFile: Reflux.createAction(),
+    // Пост-обработка сконвертированных данных завершена - нужно перейти к их сохранению
     completeResultFile: Reflux.createAction(),
     // --
+    // Сохранение файла на диске
     saveFile: Reflux.createAction(saveFileDef),
+    // Уведомление о том, что файл сохранен
     savedFileComplete: Reflux.createAction()
 };
 
