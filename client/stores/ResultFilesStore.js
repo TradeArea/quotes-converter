@@ -30,9 +30,9 @@ var ResultFilesStore = Reflux.createStore({
     /**
      * Добавляем файл в список обрабатываемых
      */
-    handleCreateResultFile: function(file) {
+    handleCreateResultFile: function(fileObject) {
         this.update(this.resultFiles.concat([{
-            file: file,
+            file: fileObject.file,
             progress: true,
             complete: false,
             saved: false
