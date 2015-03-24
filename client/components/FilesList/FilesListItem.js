@@ -15,8 +15,7 @@ var FilesListItem = React.createClass({
 
     getDefaultProps: function () {
         return {
-            fileObject: {},
-            onClick: function () {}
+            fileObject: {}
         };
     },
 
@@ -27,7 +26,7 @@ var FilesListItem = React.createClass({
         };
 
         return (
-            <li className={hcx(cls)} onClick={this.props.onClick}>
+            <li className={hcx(cls)}>
                 <Row>
                     <Col md={7} xs={7} sm={7} className="name">{this.props.fileObject.file.name}</Col>
                     <Col md={5} xs={5} sm={5}>{this.props.fileObject.file.size}</Col>

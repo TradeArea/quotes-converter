@@ -44,6 +44,7 @@ var FilesActions = {
     unSelectFile: Reflux.createAction(),
     // --
     convertNextFile: Reflux.createAction(),
+    convertComplete: Reflux.createAction(),
     // --
     createResultFile: Reflux.createAction(),
     //progressResultFile: Reflux.createAction(),

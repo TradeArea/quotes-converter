@@ -13,8 +13,7 @@ var Bootstrap = require('react-bootstrap'),
     Row = Bootstrap.Row,
     Col = Bootstrap.Col;
 
-var FilesActions = require('../../actions/FilesActions'),
-    ConverterActions = require('../../actions/ConverterActions');
+var FilesActions = require('../../actions/FilesActions');
 
 /*var SourceFilesStore = require('../../stores/SourceFilesStore'),
     ResultFilesStore = require('../../stores/ResultFilesStore');*/
@@ -38,7 +37,7 @@ var MainGrid = React.createClass({
         /*Reflux.connect(SourceFilesStore, 'files'),
         Reflux.connect(ResultFilesStore, 'resultFiles'),*/
         Reflux.listenTo(FilesActions.convertNextFile, 'convertNextFile'),
-        Reflux.listenTo(ConverterActions.convertComplete, 'convertComplete')
+        Reflux.listenTo(FilesActions.convertComplete, 'convertComplete')
     ],
 
     getInitialState: function () {

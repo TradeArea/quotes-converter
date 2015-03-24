@@ -11,7 +11,7 @@ if (setImmediate.constructor !== Function) {
     }
 }
 
-var ConverterActions = require('../actions/ConverterActions');
+var FilesActions = require('../actions/FilesActions');
 
 /**
  * Когда вычисляем дату с которой начнем строить результирующий набор данных - какая-то начальная часть
@@ -68,7 +68,7 @@ function convertIteration (i, timeFormatter, timeItemPrev, resultArrayIndex, cal
         //continue;
         i++;
         if (i < this.source.length) setImmediate((convertIteration).bind(this, i, timeFormatter, timeItemPrev, resultArrayIndex, calculatePeriodStart, calculatePeriodEnd, resolutionSeconds, resultArray, callback));
-        else ConverterActions.convertComplete(resultArray);
+        else FilesActions.convertComplete(resultArray);
         return;
     }
     timeItemPrev = i > 0 ? moment(this.source[i-1][0] + " " + this.source[i-1][1], timeFormatter).unix() : -1;
@@ -129,7 +129,7 @@ function convertIteration (i, timeFormatter, timeItemPrev, resultArrayIndex, cal
     }
     i++;
     if (i < this.source.length) setImmediate((convertIteration).bind(this, i, timeFormatter, timeItemPrev, resultArrayIndex, calculatePeriodStart, calculatePeriodEnd, resolutionSeconds, resultArray, callback));
-    else ConverterActions.convertComplete(resultArray);
+    else FilesActions.convertComplete(resultArray);
 }
 
 module.exports = {

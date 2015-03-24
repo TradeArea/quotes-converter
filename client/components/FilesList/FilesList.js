@@ -6,8 +6,6 @@
 var React = require('react');
 var FilesListItem = require('./FilesListItem');
 
-var FilesActions = require('../../actions/FilesActions');
-
 var FilesList = React.createClass({
 
     getDefaultProps: function () {
@@ -21,11 +19,7 @@ var FilesList = React.createClass({
     },
 
     createFilesListItem: function (fileObject) {
-        return <FilesListItem fileObject={fileObject} onClick={this.handleClickListItem.bind(this, fileObject)} />;
-    },
-
-    handleClickListItem: function (fileObject) {
-        !!fileObject.selected ? FilesActions.unSelectFile(fileObject) : FilesActions.selectFile(fileObject);
+        return <FilesListItem fileObject={fileObject} />;
     },
 
     render: function () {

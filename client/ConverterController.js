@@ -5,8 +5,7 @@
 
 
 var Reflux = require('reflux');
-var FilesActions = require('./actions/FilesActions'),
-    ConverterActions = require('./actions/ConverterActions');
+var FilesActions = require('./actions/FilesActions');
 
 var SourceFilesStore = require('./stores/SourceFilesStore'),
     ResultFilesStore = require('./stores/ResultFilesStore');
@@ -33,13 +32,11 @@ var ConvertController = Reflux.createStore({
     },
 
     changeSourceFiles: function (sourceFiles) {
-        debugger;
         this.state.sourceFiles = sourceFiles;
         this.update(this.state);
     },
 
     changeResultFiles: function (resultFiles) {
-        debugger;
         this.state.resultFiles = resultFiles;
         this.update(this.state);
     },
