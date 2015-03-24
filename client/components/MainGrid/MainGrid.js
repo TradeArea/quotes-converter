@@ -16,14 +16,16 @@ var Bootstrap = require('react-bootstrap'),
 var FilesActions = require('../../actions/FilesActions'),
     ConverterActions = require('../../actions/ConverterActions');
 
-var SourceFilesStore = require('../../stores/SourceFilesStore'),
-    ResultFilesStore = require('../../stores/ResultFilesStore');
+/*var SourceFilesStore = require('../../stores/SourceFilesStore'),
+    ResultFilesStore = require('../../stores/ResultFilesStore');*/
 
 var ChooseFilesMixin = require('../../mixins/ChooseFilesMixin'),
     QuotesConverterMixin = require('../../mixins/QuotesConverterMixin'),
     FileReaderMixin = require('../../mixins/FileReaderMixin');
 
 var FilesList = require('../FilesList/FilesList');
+
+var ConverterController = require('../../ConverterController');
 
 var MainGrid = React.createClass({
 
@@ -32,8 +34,9 @@ var MainGrid = React.createClass({
         FileReaderMixin,
         ChooseFilesMixin,
         QuotesConverterMixin,
-        Reflux.connect(SourceFilesStore, 'files'),
-        Reflux.connect(ResultFilesStore, 'resultFiles'),
+        Reflux.connect(ConverterController),
+        /*Reflux.connect(SourceFilesStore, 'files'),
+        Reflux.connect(ResultFilesStore, 'resultFiles'),*/
         Reflux.listenTo(FilesActions.convertNextFile, 'convertNextFile'),
         Reflux.listenTo(ConverterActions.convertComplete, 'convertComplete')
     ],
@@ -112,9 +115,9 @@ var MainGrid = React.createClass({
     },
 
     convertNextFile: function () {
-        var selectedFiles = this.state.files.filter(function(f) { return f.selected == true; }),
+        var selectedFiles = this.state.sourceFiles.filter(function(f) { return f.selected == true; }),
             ln = selectedFiles.length;
-        debugger;
+
         if (!!ln) {
             this.setState({
                 cFile: selectedFiles[0]
@@ -124,12 +127,12 @@ var MainGrid = React.createClass({
     },
 
     render: function () {
-        //var disabledButtonState = !!this.state.files.filter(function(f) { return f.selected == true; }).length ? "enabled": "disabled";
+        //var disabledButtonState = !!this.state.sourceFiles.filter(function(f) { return f.selected == true; }).length ? "enabled": "disabled";
         return (
             <div className="grid-component">
                 <Row>
                     <Col className="left-col" md={5} xs={5} sm={5}>
-                        <FilesList files={this.state.files} />
+                        <FilesList files={this.state.sourceFiles} />
                     </Col>
                     <Col className="center-col" md={2} xs={2} sm={2}>
                         <div className="progress">{this.state.progress}</div>

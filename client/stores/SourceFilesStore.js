@@ -6,10 +6,7 @@
 
 var Reflux = require('reflux');
 var FilesActions = require('../actions/FilesActions');
-
-function filesEqual(f1, f2) {
-    return f1.name == f2.name && f1.size == f2.size;
-}
+var filesEqual = require('../utils/files').filesEqual;
 
 var SourceFilesStore = Reflux.createStore({
     init: function () {
