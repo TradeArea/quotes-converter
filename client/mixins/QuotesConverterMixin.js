@@ -54,7 +54,7 @@ var getStartPoint = function (realStartDate, realStartTime, resolution) {
     }
 };
 
-
+// TODO: Не учтены погрешности при преобразовании в недельный и месячный таймфреймы. Погрешность будут создавать белые пятна на выходных. Проверить.
 function convertIteration (i, timeFormatter, timeItemPrev, resultArrayIndex, calculatePeriodStart, calculatePeriodEnd, resolutionSeconds, resultArray, callback) {
     var timeItem,
         current,

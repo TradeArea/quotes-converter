@@ -74,10 +74,10 @@ var ResultFilesStore = Reflux.createStore({
         var files = this.resultFiles.concat([]),
             ln = files.length;
 
-        debugger;
         for (var i = 0;i<ln;i++) {
             if (filesEqual(files[i].file, fileObject.file)) {
                 files[i].saved = true;
+                files[i].progress = false;
                 break;
             }
         }
