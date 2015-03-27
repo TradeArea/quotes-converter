@@ -1,65 +1,6 @@
 /**
  * Created by KlimMalgin on 25.10.2014.
  */
-.grid-component {
-  text-align: center; }
-  .grid-component .center-col {
-    position: relative;
-    top: auto;
-    right: auto;
-    bottom: auto;
-    left: auto;
-    text-align: center;
-    min-height: 200px; }
-    .grid-component .center-col .to-h1 {
-      position: absolute;
-      top: auto;
-      right: auto;
-      bottom: 0;
-      left: auto; }
-  .grid-component .select-files-area {
-    width: 100%;
-    height: 50px;
-    border: 3px;
-    border-style: dashed;
-    font-size: 15px;
-    padding: 5px;
-    margin: 0 auto;
-    text-align: center;
-    cursor: pointer; }
-
-.files-list {
-  text-align: left; }
-  .files-list .files-list-item {
-    position: relative;
-    top: auto;
-    right: auto;
-    bottom: auto;
-    left: auto;
-    border: solid 1px #ccc;
-    list-style-type: none; }
-    .files-list .files-list-item.selected {
-      background-color: #cc7b44; }
-    .files-list .files-list-item:hover {
-      background-color: #dae3ff; }
-    .files-list .files-list-item .name {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis; }
-
-.files-list-item .progress-bg {
-  display: none;
-  opacity: 0.6;
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  width: inherit !important;
-  height: inherit !important; }
-  .files-list-item .progress-bg.visible {
-    display: block; }
-
 /*! normalize.css v3.0.1 | MIT License | git.io/normalize */
 html {
   font-family: sans-serif;
@@ -6232,6 +6173,75 @@ button.close {
 
 .fa-meanpath:before {
   content: "\f20c"; }
+
+.grid-component {
+  text-align: center; }
+  .grid-component .center-col {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    text-align: center;
+    min-height: 200px; }
+    .grid-component .center-col .to-h1 {
+      position: absolute;
+      top: auto;
+      right: auto;
+      bottom: 0;
+      left: auto; }
+  .grid-component .select-files-area {
+    width: 100%;
+    height: 50px;
+    border: 3px;
+    border-style: dashed;
+    font-size: 15px;
+    padding: 5px;
+    margin: 0 auto;
+    text-align: center;
+    cursor: pointer; }
+
+.files-list {
+  text-align: left; }
+  .files-list .files-list-item {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    border: solid 1px #ccc;
+    list-style-type: none; }
+    .files-list .files-list-item.selected {
+      background-color: #cc7b44; }
+    .files-list .files-list-item:hover {
+      background-color: #dae3ff; }
+    .files-list .files-list-item .name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; }
+
+.files-list-item .progress-bg {
+  display: none;
+  opacity: 0.6;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: inherit !important;
+  height: inherit !important; }
+  .files-list-item .progress-bg.visible {
+    display: block; }
+
+.btn {
+  width: 45px;
+  padding: 6px 0; }
+
+.resolutions-component {
+  text-align: center; }
+
+.resolution-item {
+  margin: 5px; }
 
 .application {
   position: absolute;

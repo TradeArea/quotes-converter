@@ -86,11 +86,9 @@ var ResolutionStore = Reflux.createStore({
         var rr = this.resolutions,
             ln = rr.length;
 
-        debugger;
-
         for (var i = 0;i<ln;i++) {
             if (rr[i].name == resolutionItem.name) {
-                rr[i].checked = true;
+                rr[i].checked = !rr[i].checked;
             }
         }
 

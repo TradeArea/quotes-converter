@@ -36,7 +36,7 @@ var Resolutions = React.createClass({
         };
 
         return (
-            <div className="btn-group" onClick={(function () { ResolutionActions.checkResolution(this) }).bind(item)}>
+            <div className="btn-group resolution-item" onClick={ResolutionActions.checkResolution.handler(item)}>
                 <label className={hcx(cls)}>
                     {item.name}
                 </label>
