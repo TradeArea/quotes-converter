@@ -66,7 +66,7 @@ var ConvertController = Reflux.createStore({
 
     convertNextFile: function () {
         var files = this.state.sourceFiles.filter(function (item) {
-            return item.complete != true;
+            return /*item.complete != true &&*/ !!item.resolutions && item.resolutions.length > 0;
         });
 
         if (!!files.length) {
@@ -88,7 +88,11 @@ var ConvertController = Reflux.createStore({
     fileDataAnalizer: function (e) {
         var FileArray = e.target.result.split('\n'),
             faLn = FileArray.length,
-            that = this;
+            fileInfo = this.state.sourceFileProcessed,
+            targetResolution = fileInfo.resolutions.shift();
+
+        this.state.sourceFileProcessed = fileInfo;
+        this.update(this.state);
 
         for (var i = 0; i<faLn; i++) {
             FileArray[i] = FileArray[i].split(',');
@@ -97,7 +101,7 @@ var ConvertController = Reflux.createStore({
         CreateConverter()
             .params({
                 sourceData: FileArray,
-                targetResolution: 60
+                targetResolution: targetResolution
             })
             .convert(function (index, count) {
                 var onePercent = count / 100,

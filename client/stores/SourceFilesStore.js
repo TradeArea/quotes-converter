@@ -5,12 +5,16 @@
 
 var Reflux = require('reflux');
 var FilesActions = require('../actions/FilesActions');
+var ResolutionStore = require('../stores/ResolutionStore');
 var filesEqual = require('../utils/files').filesEqual;
+var resolutionFilter = require('../utils/resolutions').filter;
 
 var SourceFilesStore = Reflux.createStore({
     init: function () {
         this.files = [];
 
+        this.listenTo(ResolutionStore, this.changeResolutionStore);
+        // --
         this.listenTo(FilesActions.addFiles, this.handleAddFiles);
         // --
         this.listenTo(FilesActions.createResultFile, this.handleCreateResultFile);
@@ -62,6 +66,15 @@ var SourceFilesStore = Reflux.createStore({
         }
 
         this.update(this.files);
+    },
+
+    changeResolutionStore: function (resolutions) {
+        var files = this.files.map(function (file) {
+            file.resolutions = resolutionFilter(resolutions);
+            return file;
+        });
+
+        this.update(files);
     },
 
     excludeDublicate: function (files) {
