@@ -64,6 +64,7 @@ var ResolutionStore = Reflux.createStore({
         ];
 
         this.listenTo(ResolutionActions.emitResolutions, this.handleEmitResolutions);
+        this.listenTo(ResolutionActions.checkResolution, this.handleCheckResolution);
     },
 
     getDefaultData: function() {
@@ -79,6 +80,21 @@ var ResolutionStore = Reflux.createStore({
      */
     handleEmitResolutions: function () {
         this.update(this.resolutions);
+    },
+
+    handleCheckResolution: function (resolutionItem) {
+        var rr = this.resolutions,
+            ln = rr.length;
+
+        debugger;
+
+        for (var i = 0;i<ln;i++) {
+            if (rr[i].name == resolutionItem.name) {
+                rr[i].checked = true;
+            }
+        }
+
+        this.update(rr);
     }
 
 });

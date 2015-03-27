@@ -5,8 +5,11 @@
 
 var React = require('react');
 
+var hcx = require('../../utils/hcx');
 /*var Reflux = require('reflux'),
     ListenerMixin = Reflux.ListenerMixin;*/
+
+var ResolutionActions = require('../../actions/ResolutionActions');
 
 var Bootstrap = require('react-bootstrap'),
     Row = Bootstrap.Row,
@@ -25,12 +28,25 @@ var Resolutions = React.createClass({
     },
 
     renderResolutionItem: function (item) {
-        return <div className="resolution-item">{item.name}</div>;
+        //return <div className="resolution-item">{item.name}</div>;
+        var cls = {
+            btn: true,
+            btnPrimary: true,
+            active: item.checked
+        };
+
+        return (
+            <div className="btn-group" onClick={(function () { ResolutionActions.checkResolution(this) }).bind(item)}>
+                <label className={hcx(cls)}>
+                    {item.name}
+                </label>
+            </div>
+        );
     },
 
     render: function () {
         return (
-            <div className="resolutions-component">
+            <div className="resolutions-component" data-toggle="buttons">
                 {this.renderResolutions()}
             </div>
         );

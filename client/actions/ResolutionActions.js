@@ -6,7 +6,8 @@ var Reflux = require('reflux');
 
 var ResolutionActions = {
 
-    emitResolutions: Reflux.createAction()
+    emitResolutions: Reflux.createAction(),
+    checkResolution: Reflux.createAction()
 
 };
 
