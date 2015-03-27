@@ -22,7 +22,6 @@ var saveFileDef = {
         try {
             FS && FS.writeFile &&
             FS.writeFile("D:\\" + fileObject.name, fileObject.resultData, function(err) {
-                debugger;
                 if(err) {
                     return console.log(err);
                 }
