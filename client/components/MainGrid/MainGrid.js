@@ -45,15 +45,15 @@ var MainGrid = React.createClass({
     render: function () {
         return (
             <div className="grid-component">
-                <Row>
+                <Row className="grid-area">
                     <Col className="left-col" md={5} xs={5} sm={5}>
                         <FilesList files={this.state.sourceFiles} />
                     </Col>
                     <Col className="center-col" md={2} xs={2} sm={2}>
                         <div className="select-files-area">Выберите файлы</div>
                         <Resolutions resolutions={this.state.resolutions} />
-                        <br/>
-                        <button onClick={FilesActions.convertNextFile} className="to-h1">Сконвертировать в H1</button>
+
+                        <button onClick={FilesActions.convertNextFile} type="button" className="to-h1 btn btn-success">Конвертировать</button>
                     </Col>
                     <Col className="right-col" md={5} xs={5} sm={5}>
                         <FilesList files={this.state.resultFiles} />
