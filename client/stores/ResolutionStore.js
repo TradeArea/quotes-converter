@@ -4,6 +4,8 @@
 
 var Reflux = require('reflux');
 
+var ResolutionActions = require('../actions/ResolutionActions');
+
 var ResolutionStore = Reflux.createStore({
     init: function () {
 
@@ -61,7 +63,7 @@ var ResolutionStore = Reflux.createStore({
             }
         ];
 
-        //this.listenTo(FilesActions.createResultFile, this.handleCreateResultFile);
+        this.listenTo(ResolutionActions.emitResolutions, this.handleEmitResolutions);
     },
 
     getDefaultData: function() {
@@ -70,6 +72,13 @@ var ResolutionStore = Reflux.createStore({
 
     update : function(resolutions) {
         this.trigger(this.resolutions = resolutions);
+    },
+
+    /**
+     * Уведомляем подписчиков о текущем состоянии стора
+     */
+    handleEmitResolutions: function () {
+        this.update(this.resolutions);
     }
 
 });

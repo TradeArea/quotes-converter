@@ -5,10 +5,12 @@
 
 
 var Reflux = require('reflux');
-var FilesActions = require('./actions/FilesActions');
+var FilesActions = require('./actions/FilesActions'),
+    ResolutionActions = require('./actions/ResolutionActions');
 
 var SourceFilesStore = require('./stores/SourceFilesStore'),
-    ResultFilesStore = require('./stores/ResultFilesStore');
+    ResultFilesStore = require('./stores/ResultFilesStore'),
+    ResolutionStore = require('./stores/ResolutionStore');
 
 var CreateFileReader = require('./mixins/FileReaderMixin').createReader;
 var CreateConverter = require('./mixins/QuotesConverterMixin').createConverter;
@@ -19,15 +21,19 @@ var ConvertController = Reflux.createStore({
             sourceFileProcessed: null,
             convertProgress: 0,
             sourceFiles: [],
-            resultFiles: []
+            resultFiles: [],
+            resolutions: []
         };
 
         this.listenTo(SourceFilesStore, this.changeSourceFiles);
         this.listenTo(ResultFilesStore, this.changeResultFiles);
+        this.listenTo(ResolutionStore, this.changeResolutions);
 
         this.listenTo(FilesActions.convertNextFile, this.convertNextFile);
         this.listenTo(FilesActions.convertProgress, this.handleConvertProgress);
         this.listenTo(FilesActions.convertComplete, this.handleConvertComplete);
+
+        ResolutionActions.emitResolutions();
     },
 
     getDefaultData: function() {
@@ -36,6 +42,11 @@ var ConvertController = Reflux.createStore({
 
     update : function(state) {
         this.trigger(this.state = state);
+    },
+
+    changeResolutions: function (resolutions) {
+        this.state.resolutions = resolutions;
+        this.update(this.state);
     },
 
     changeSourceFiles: function (sourceFiles) {

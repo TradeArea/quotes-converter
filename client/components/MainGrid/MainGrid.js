@@ -13,6 +13,8 @@ var Bootstrap = require('react-bootstrap'),
     Row = Bootstrap.Row,
     Col = Bootstrap.Col;
 
+var Resolutions = require('../Resolutions/Resolutions');
+
 var FilesActions = require('../../actions/FilesActions');
 
 var ChooseFilesMixin = require('../../mixins/ChooseFilesMixin');
@@ -48,6 +50,7 @@ var MainGrid = React.createClass({
                     <Col className="center-col" md={2} xs={2} sm={2}>
                         <div className="progress">{this.state.convertProgress + "%"}</div>
                         <div className="select-files-area">Выберите файлы</div>
+                        <Resolutions resolutions={this.state.resolutions} />
                         <button onClick={FilesActions.convertNextFile} className="to-h1">Сконвертировать в H1</button>
                     </Col>
                     <Col className="right-col" md={5} xs={5} sm={5}>
