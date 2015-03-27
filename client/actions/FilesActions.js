@@ -28,15 +28,15 @@ var saveFileDef = {
                 }
 
                 FilesActions.savedFileComplete(fileObject);
+                FilesActions.convertNextFile();
                 console.log("The file was saved!");
             }) || console.warn('Try: writeFile function is not defined!');
         } catch (e) {
             console.warn('Catch: writeFile function is not defined! %o', e);
+            // TODO: Для браузерного тестирования
+            FilesActions.savedFileComplete(fileObject);
+            FilesActions.convertNextFile();
         }
-
-        // TODO: Времянка
-        FilesActions.savedFileComplete(fileObject);
-        FilesActions.convertNextFile();
     }
 };
 

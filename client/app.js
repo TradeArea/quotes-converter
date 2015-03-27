@@ -16,6 +16,8 @@ require('reflux').nextTick(window.setImmediate);
  */
 require('./actions/ActionMethods');
 
+var FS = require('fs');
+
 
 var React = require('react'),
     Application = require('./components/Application');
