@@ -6243,6 +6243,15 @@ button.close {
 .resolution-item {
   margin: 5px; }
 
+.progress-component {
+  margin: 10px; }
+  .progress-component .file-name {
+    float: right;
+    color: #000;
+    margin-right: 10px; }
+  .progress-component .progress-bar {
+    color: #000; }
+
 .application {
   position: absolute;
   top: 0;

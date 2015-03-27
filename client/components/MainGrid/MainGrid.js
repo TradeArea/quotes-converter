@@ -21,6 +21,8 @@ var ChooseFilesMixin = require('../../mixins/ChooseFilesMixin');
 
 var FilesList = require('../FilesList/FilesList');
 
+var Progress = require('../Progress/Progress');
+
 var ConverterController = require('../../ConverterController');
 
 var MainGrid = React.createClass({
@@ -48,13 +50,17 @@ var MainGrid = React.createClass({
                         <FilesList files={this.state.sourceFiles} />
                     </Col>
                     <Col className="center-col" md={2} xs={2} sm={2}>
-                        <div className="progress">{this.state.convertProgress + "%"}</div>
                         <div className="select-files-area">Выберите файлы</div>
                         <Resolutions resolutions={this.state.resolutions} />
                         <button onClick={FilesActions.convertNextFile} className="to-h1">Сконвертировать в H1</button>
                     </Col>
                     <Col className="right-col" md={5} xs={5} sm={5}>
                         <FilesList files={this.state.resultFiles} />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <Progress fileProgress={this.state.convertProgress} />
                     </Col>
                 </Row>
             </div>
