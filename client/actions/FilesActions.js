@@ -8,7 +8,9 @@ var addFilesDef = {
     preEmit : function(files) {
         var ss = files.map(function (item) {
             return {
-                file: item
+                file: item,
+                complete: false,
+                progress: false
             };
         });
         return [ss];
@@ -33,6 +35,7 @@ var saveFileDef = {
         }
 
         // TODO: Времянка
+        FilesActions.savedFileComplete(fileObject);
         FilesActions.convertNextFile();
     }
 };

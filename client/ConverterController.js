@@ -65,7 +65,9 @@ var ConvertController = Reflux.createStore({
     },
 
     convertNextFile: function () {
-        var files = this.state.sourceFiles;
+        var files = this.state.sourceFiles.filter(function (item) {
+            return item.complete != true;
+        });
 
         if (!!files.length) {
             this.state.sourceFileProcessed = files[0];

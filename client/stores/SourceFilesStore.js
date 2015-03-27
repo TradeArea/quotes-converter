@@ -3,7 +3,6 @@
  */
 'use strict';
 
-
 var Reflux = require('reflux');
 var FilesActions = require('../actions/FilesActions');
 var filesEqual = require('../utils/files').filesEqual;
@@ -15,6 +14,7 @@ var SourceFilesStore = Reflux.createStore({
         this.listenTo(FilesActions.addFiles, this.handleAddFiles);
         // --
         this.listenTo(FilesActions.createResultFile, this.handleCreateResultFile);
+        this.listenTo(FilesActions.savedFileComplete, this.handleSavedFileComplete);
     },
 
     getDefaultData: function() {
@@ -48,6 +48,20 @@ var SourceFilesStore = Reflux.createStore({
 
         files[index] = this.setFileAsProgress(files[index]);
         this.update(files);
+    },
+
+    handleSavedFileComplete: function (fileObject) {
+        var files = this.files.concat([]),
+            ln = files.length;
+
+        for (var i = 0;i<ln;i++) {
+            if (filesEqual(files[i], fileObject)) {
+                files[i].complete = true;
+                files[i].progress = false;
+            }
+        }
+
+        this.update(this.files);
     },
 
     excludeDublicate: function (files) {
