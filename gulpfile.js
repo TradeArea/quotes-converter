@@ -128,7 +128,7 @@ gulp.task("open", ['server'], function(){
 // Rerun the task when a file changes
 gulp.task('watch', ['build'], function(cb) {
     gulp.watch(paths.watch.js, ['scripts']);
-    gulp.watch(paths.watch.html, ['copy']);
+    gulp.watch(paths.watch.html, ['copy-html', 'copy']);
     gulp.watch(paths.watch.scss, ['sass', 'copy']);
     cb();
 });

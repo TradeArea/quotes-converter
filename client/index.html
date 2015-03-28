@@ -8,6 +8,13 @@
     <!--/build -->
 </head>
 <body>
+    <script>
+        try {
+            var FS = require('fs');
+        } catch (e) {
+            console.log('Fail require("fs")\n%o', e);
+        }
+    </script>
     <input type="file" id="fileElem" class="fileInput" multiple style="display:none">
     <div class="main">
         <!--build:js js/app.min.js-->
