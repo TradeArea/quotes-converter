@@ -61,7 +61,7 @@ var MainGrid = React.createClass({
                 </Row>
                 <Row>
                     <Col>
-                        <Progress fileProgress={this.state.convertProgress} />
+                        <Progress fileProgress={this.state.convertProgress} targetFileName={this.state.targetFileName} />
                     </Col>
                 </Row>
             </div>

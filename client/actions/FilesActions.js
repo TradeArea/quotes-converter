@@ -64,7 +64,11 @@ var FilesActions = {
     // Сохранение файла на диске
     saveFile: Reflux.createAction(saveFileDef),
     // Уведомление о том, что файл сохранен
-    savedFileComplete: Reflux.createAction()
+    savedFileComplete: Reflux.createAction(),
+
+    // --
+    targetFileName: Reflux.createAction()
+
 };
 
 module.exports = FilesActions;

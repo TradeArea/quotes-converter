@@ -10,7 +10,8 @@ var FilesActions = require('./actions/FilesActions'),
 
 var SourceFilesStore = require('./stores/SourceFilesStore'),
     ResultFilesStore = require('./stores/ResultFilesStore'),
-    ResolutionStore = require('./stores/ResolutionStore');
+    ResolutionStore = require('./stores/ResolutionStore'),
+    TargetFileNameStore = require('./stores/TargetFileNameStore');
 
 var CreateFileReader = require('./mixins/FileReaderMixin').createReader;
 var CreateConverter = require('./mixins/QuotesConverterMixin').createConverter;
@@ -20,6 +21,7 @@ var ConvertController = Reflux.createStore({
         this.state = {
             sourceFileProcessed: null,
             convertProgress: 0,
+            targetFileName: "",
             sourceFiles: [],
             resultFiles: [],
             resolutions: []
@@ -28,6 +30,7 @@ var ConvertController = Reflux.createStore({
         this.listenTo(SourceFilesStore, this.changeSourceFiles);
         this.listenTo(ResultFilesStore, this.changeResultFiles);
         this.listenTo(ResolutionStore, this.changeResolutions);
+        this.listenTo(TargetFileNameStore, this.changeTargetFileName);
 
         this.listenTo(FilesActions.convertNextFile, this.convertNextFile);
         this.listenTo(FilesActions.convertProgress, this.handleConvertProgress);
@@ -89,11 +92,17 @@ var ConvertController = Reflux.createStore({
         var FileArray = e.target.result.split('\n'),
             faLn = FileArray.length,
             fileInfo = this.state.sourceFileProcessed,
-            targetResolution = fileInfo.resolutions.shift();
+            targetResolution = fileInfo.resolutions.shift(),
+            // --
+            arrName = fileInfo.file.name.split('.'),
+            targetFileName = arrName[0] + "_CONVERT_TO_" + targetResolution + "." + arrName[1];
+
+        FilesActions.targetFileName(targetFileName);
 
         fileInfo.targetResolution = targetResolution;
         this.state.sourceFileProcessed = fileInfo;
         this.update(this.state);
+
 
         for (var i = 0; i<faLn; i++) {
             FileArray[i] = FileArray[i].split(',');
@@ -124,6 +133,11 @@ var ConvertController = Reflux.createStore({
 
         resultData = resultArray.join('\n');
         FilesActions.completeResultFile(sourceFile, resultData);
+    },
+
+    changeTargetFileName: function (fileName) {
+        this.state.targetFileName = fileName;
+        this.update(this.state);
     }
 
 });

@@ -9,7 +9,7 @@ var Progress = React.createClass({
 
     getDefaultProps: function () {
         return {
-            targetFile: "",
+            targetFileName: "",
             fileProgress: 0,
             totalProgress: 0
         };
@@ -32,7 +32,7 @@ var Progress = React.createClass({
             <div className="progress-component">
                 <div className="progress">
                     {this.renderProgress()}
-                    <div className="file-name">{this.props.targetFile}</div>
+                    <div className="file-name">{this.props.targetFileName}</div>
                 </div>
             </div>
         );
