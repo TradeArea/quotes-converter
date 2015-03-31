@@ -19,9 +19,12 @@ var Progress = React.createClass({
         var styles = {
             width: this.props.fileProgress + "%"
         };
-        return (<div className="progress-bar" role="progressbar" aria-valuenow={this.props.fileProgress} aria-valuemin="0" aria-valuemax="100" style={styles}>
+        /*return (<div className="progress-bar" role="progressbar" aria-valuenow={this.props.fileProgress} aria-valuemin="0" aria-valuemax="100" style={styles}>
             {this.props.fileProgress + "%"}
-        </div>);
+        </div>);*/
+        return (<span>
+            {this.props.fileProgress + "%"}
+        </span>);
     },
 
     render: function () {

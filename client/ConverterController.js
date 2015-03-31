@@ -91,6 +91,7 @@ var ConvertController = Reflux.createStore({
             fileInfo = this.state.sourceFileProcessed,
             targetResolution = fileInfo.resolutions.shift();
 
+        fileInfo.targetResolution = targetResolution;
         this.state.sourceFileProcessed = fileInfo;
         this.update(this.state);
 
@@ -122,7 +123,7 @@ var ConvertController = Reflux.createStore({
         }
 
         resultData = resultArray.join('\n');
-        FilesActions.completeResultFile(sourceFile.file, resultData);
+        FilesActions.completeResultFile(sourceFile, resultData);
     }
 
 });

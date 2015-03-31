@@ -41,18 +41,18 @@ var ResultFilesStore = Reflux.createStore({
 
     /**
      * Помечаем файл как сконвертированный и генерируем событие на сохранение
-     * @param sourceFile
+     * @param sourceFileObject
      * @param resultData
      */
-    handleCompleteResultFile: function (sourceFile, resultData) {
+    handleCompleteResultFile: function (sourceFileObject, resultData) {
         var files = this.resultFiles.concat([]),
-            arrName = sourceFile.name.split('.'),
-            name = arrName[0] + "_CONVER_TO_60." + arrName[1],
+            arrName = sourceFileObject.file.name.split('.'),
+            name = arrName[0] + "_CONVERT_TO_" + sourceFileObject.targetResolution + "." + arrName[1],
             ln = files.length,
             result = null;
 
         for (var i = 0;i<ln;i++) {
-            if (filesEqual(files[i].file, sourceFile)) {
+            if (filesEqual(files[i].file, sourceFileObject.file)) {
                 result = files[i] = {
                     file: files[i].file,
                     name: name,
@@ -64,10 +64,8 @@ var ResultFilesStore = Reflux.createStore({
                 break;
             }
         }
-
-        !!result && FilesActions.saveFile(result, resultData);
-
         this.update(files);
+        !!result && FilesActions.saveFile(result, resultData);
     },
 
     handleSavedFileComplete: function (fileObject) {

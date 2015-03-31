@@ -20,16 +20,19 @@ var addFilesDef = {
 var saveFileDef = {
     preEmit: function (fileObject) {
         try {
-            FS && FS.writeFile &&
-            FS.writeFile("D:\\" + fileObject.name, fileObject.resultData, function(err) {
-                if(err) {
-                    return console.log(err);
-                }
+            if (FS && FS.writeFile && FS.writeFile) {
+                FS.writeFile("D:\\" + fileObject.name, fileObject.resultData, function(err) {
+                    if(err) {
+                        return console.log(err);
+                    }
 
-                FilesActions.savedFileComplete(fileObject);
-                FilesActions.convertNextFile();
-                console.log("The file was saved!");
-            }) || console.warn('Try: writeFile function is not defined!');
+                    FilesActions.savedFileComplete(fileObject);
+                    FilesActions.convertNextFile();
+                    console.log("The file was saved!");
+                });
+            } else {
+                console.warn('Try: writeFile function is not defined!');
+            }
         } catch (e) {
             console.warn('Catch: writeFile function is not defined! %o', e);
             // TODO: Для браузерного тестирования
