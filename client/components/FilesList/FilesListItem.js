@@ -36,11 +36,7 @@ var FilesListItem = React.createClass({
             <li className={hcx(cls)}>
                 <div className={hcx(progressCls)}></div>
                 <Row>
-                    <Col md={7} xs={7} sm={7} className="name">{this.props.fileObject.file.name}</Col>
-                    <Col md={5} xs={5} sm={5}>{this.props.fileObject.file.size}</Col>
-                </Row>
-                <Row>
-                    <Col md={12} xs={12} sm={12}>Path</Col>
+                    <Col md={12} xs={12} sm={12} className="name">{this.props.fileObject.file.name}</Col>
                 </Row>
             </li>
         );
