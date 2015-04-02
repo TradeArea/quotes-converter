@@ -68,16 +68,13 @@ var ResultFilesStore = Reflux.createStore({
         !!result && FilesActions.saveFile(result, resultData);
     },
 
-    handleSavedFileComplete: function (fileObject) {
+    handleSavedFileComplete: function () {
         var files = this.resultFiles.concat([]),
             ln = files.length;
 
         for (var i = 0;i<ln;i++) {
-            if (filesEqual(files[i].file, fileObject.file)) {
-                files[i].saved = true;
-                files[i].progress = false;
-                break;
-            }
+            files[i].saved = true;
+            files[i].progress = false;
         }
 
         this.update(files);

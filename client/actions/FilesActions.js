@@ -27,7 +27,7 @@ var saveFileDef = {
                     }
 
                     FilesActions.savedFileComplete(fileObject);
-                    FilesActions.convertNextFile();
+                    //FilesActions.convertNextFile();
                     console.log("The file was saved!");
                 });
             } else {
@@ -37,8 +37,14 @@ var saveFileDef = {
             console.warn('Catch: writeFile function is not defined! %o', e);
             // TODO: Для браузерного тестирования
             FilesActions.savedFileComplete(fileObject);
-            FilesActions.convertNextFile();
+            //FilesActions.convertNextFile();
         }
+    }
+};
+
+var savedFileCompleteDef = {
+    preEmit: function () {
+        FilesActions.convertNextFile();
     }
 };
 
@@ -64,7 +70,7 @@ var FilesActions = {
     // Сохранение файла на диске
     saveFile: Reflux.createAction(saveFileDef),
     // Уведомление о том, что файл сохранен
-    savedFileComplete: Reflux.createAction(),
+    savedFileComplete: Reflux.createAction(savedFileCompleteDef),
 
     // --
     targetFileName: Reflux.createAction()
